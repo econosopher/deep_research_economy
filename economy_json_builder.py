@@ -11,6 +11,7 @@ import sys
 import json
 import argparse
 import subprocess
+import shutil
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional
@@ -131,28 +132,47 @@ class EconomyJSONBuilder:
         return str(file_path)
     
     def create_pull_request(self, filename: str, game_title: str) -> Optional[str]:
-        """Create a pull request with the new JSON file."""
+        """Create a pull request with the new JSON file to the figma-economy-flow-builder repo."""
         try:
+            # Save current directory
+            original_dir = os.getcwd()
+            
+            # Path to the external repository
+            external_repo_path = self.repo_path / "figma-economy-flow-builder"
+            
+            # Clone or pull the external repository if needed
+            if not external_repo_path.exists():
+                print(f"Cloning figma-economy-flow-builder repository...")
+                subprocess.run([
+                    "git", "clone", 
+                    "https://github.com/econosopher/figma-economy-flow-builder.git",
+                    str(external_repo_path)
+                ], check=True)
+            else:
+                # Pull latest changes
+                os.chdir(external_repo_path)
+                subprocess.run(["git", "checkout", "main"], check=True)
+                subprocess.run(["git", "pull", "origin", "main"], check=True)
+            
             # Change to repository directory
-            os.chdir(self.repo_path)
+            os.chdir(external_repo_path)
             
             # Create a new branch
             branch_name = f"add-{filename.replace('.json', '')}-example"
             timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
             branch_name = f"{branch_name}-{timestamp}"
             
-            # Check if we're in a git repository
-            result = subprocess.run(["git", "rev-parse", "--git-dir"], 
-                                  capture_output=True, text=True)
-            if result.returncode != 0:
-                print("Not in a git repository")
-                return None
-            
             # Create and checkout new branch
             subprocess.run(["git", "checkout", "-b", branch_name], check=True)
             
+            # Copy the JSON file to the examples folder
+            source_file = self.output_path / filename
+            target_file = external_repo_path / "examples" / filename
+            
+            shutil.copy2(source_file, target_file)
+            
             # Add the new file
-            subprocess.run(["git", "add", f"output/{filename}"], check=True)
+            subprocess.run(["git", "add", f"examples/{filename}"], check=True)
             
             # Commit the changes
             commit_message = f"""Add {game_title} economy flow example
@@ -204,6 +224,7 @@ Generated using {self.provider_name} provider with deep research."""
             
             if result.returncode == 0:
                 pr_url = result.stdout.strip()
+                print(f"Pull request created: {pr_url}")
                 return pr_url
             else:
                 print(f"Failed to create PR: {result.stderr}")
@@ -215,6 +236,9 @@ Generated using {self.provider_name} provider with deep research."""
         except Exception as e:
             print(f"Error creating pull request: {e}")
             return None
+        finally:
+            # Always return to original directory
+            os.chdir(original_dir)
 
 
 def setup_command():
