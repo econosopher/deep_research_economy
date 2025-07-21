@@ -3,7 +3,6 @@
 .RData
 .Ruserdata
 .env
-output/
 *.tar.gz
 .DS_Store
 inst/doc
