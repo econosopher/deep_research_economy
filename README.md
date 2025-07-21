@@ -1,4 +1,6 @@
-<img src="package_logo.png" width="200" alt="fortniteR logo">
+<p align="center">
+  <img src="package_logo.png" width="200" alt="fortniteR logo">
+</p>
 
 # fortniteR
 
@@ -17,7 +19,9 @@ pacman::p_load_gh("econosopher/fortniteR")
 
 ## Usage
 
-No authentication required! The Fortnite Ecosystem API is public.
+**IMPORTANT**: This package uses real API data only. NO MOCK DATA is used.
+
+The Fortnite Ecosystem API is PUBLIC and does NOT require authentication. The API documentation incorrectly mentions OAuth2, but all endpoints work without any authentication.
 
 ### Fetching Island Data
 
@@ -44,45 +48,21 @@ metrics <- get_island_metrics(
 
 ### Creating Visualizations
 
-See `scripts/top_islands_gt_table.R` for a complete example of fetching data and creating a GT table.
+The package includes a script to create beautiful GT tables from the API data:
+
+```bash
+# Run this script to generate the top 10 islands table
+Rscript scripts/01_top_10_islands_table.R
+```
 
 ### Example Output
 
 Here's an example of a GT table generated using real data from the Fortnite Ecosystem API:
 
-![Top 10 Fortnite Islands Table](output/real_top_10_islands.png)
+![Top 10 Fortnite Islands Table](output/top_10_islands_table.png)
 
-*This table shows actual islands retrieved from the API, displaying island codes, names, creators, platforms (UEFN/FNC), and categories.*
+*This table shows the top performing Fortnite Creative Islands ranked by unique players, displaying comprehensive engagement metrics (unique players, total plays, average play time, peak CCU) and retention data (D1 and D7 retention rates).*
 
-### Fetching Real Island Data
-
-The package includes scripts that demonstrate fetching real data from the Fortnite API:
-- `scripts/generate_real_top_islands.R` - Creates the GT table shown above with current island data
-- `scripts/pull_real_top_islands.R` - Fetches islands and creates various visualizations
-
-```r
-# Load packages using pacman
-if (!require(pacman)) install.packages("pacman")
-pacman::p_load(fortniteR, dplyr, gt, ggplot2)
-
-# Fetch top islands from the API
-top_islands <- get_islands(limit = 10)
-
-# Create a GT table with the data
-gt_table <- top_islands %>%
-  select(island_code, island_name, description) %>%
-  gt() %>%
-  tab_header(
-    title = "Featured Fortnite Creative Islands",
-    subtitle = paste("Popular islands as of", Sys.Date())
-  )
-```
-
-This script will:
-- Fetch current island data from the Fortnite Ecosystem API
-- Create a formatted GT table
-- Generate a visualization chart
-- Save outputs to the `output/` directory
 
 ## Features
 

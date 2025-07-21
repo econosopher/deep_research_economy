@@ -111,23 +111,62 @@ get_island_metrics <- function(code, start_date, end_date, interval = "day") {
     httr2::req_perform() |>
     httr2::resp_body_json()
   
-  # Parse metrics
-  if (length(resp$metrics) == 0) {
+  # Parse metrics - API returns metrics organized by type, not by timestamp
+  if (is.null(resp) || length(resp) == 0) {
     return(tibble::tibble())
   }
   
-  metrics_data <- resp$metrics |>
-    purrr::map_df(~ {
-      tibble::tibble(
-        timestamp = as.POSIXct(.x$timestamp %||% NA_character_),
-        unique_players = .x$uniquePlayers %||% NA_integer_,
-        plays = .x$plays %||% NA_integer_,
-        average_play_time_seconds = .x$averagePlayTimeSeconds %||% NA_real_,
-        retention_1_day = .x$retention1Day %||% NA_real_,
-        retention_7_days = .x$retention7Days %||% NA_real_,
-        retention_30_days = .x$retention30Days %||% NA_real_
-      )
-    })
+  # Extract timestamps from any metric array
+  timestamps <- if (!is.null(resp$plays)) {
+    purrr::map_chr(resp$plays, ~ .x$timestamp %||% NA_character_)
+  } else if (!is.null(resp$uniquePlayers)) {
+    purrr::map_chr(resp$uniquePlayers, ~ .x$timestamp %||% NA_character_)
+  } else {
+    character(0)
+  }
+  
+  if (length(timestamps) == 0) {
+    return(tibble::tibble())
+  }
+  
+  # Build metrics data frame
+  metrics_data <- tibble::tibble(
+    timestamp = as.POSIXct(timestamps)
+  )
+  
+  # Add plays
+  if (!is.null(resp$plays)) {
+    metrics_data$plays <- purrr::map_dbl(resp$plays, ~ .x$value %||% NA_real_)
+  }
+  
+  # Add unique players
+  if (!is.null(resp$uniquePlayers)) {
+    metrics_data$unique_players <- purrr::map_dbl(resp$uniquePlayers, ~ .x$value %||% NA_real_)
+  }
+  
+  # Add average minutes per player (convert to seconds)
+  if (!is.null(resp$averageMinutesPerPlayer)) {
+    metrics_data$average_play_time_seconds <- purrr::map_dbl(
+      resp$averageMinutesPerPlayer, 
+      ~ (.x$value %||% NA_real_) * 60
+    )
+  }
+  
+  # Add favorites
+  if (!is.null(resp$favorites)) {
+    metrics_data$favorites <- purrr::map_dbl(resp$favorites, ~ .x$value %||% NA_real_)
+  }
+  
+  # Add recommendations
+  if (!is.null(resp$recommendations)) {
+    metrics_data$recommendations <- purrr::map_dbl(resp$recommendations, ~ .x$value %||% NA_real_)
+  }
+  
+  # Add retention (these come in a different format)
+  if (!is.null(resp$retention)) {
+    metrics_data$retention_1_day <- purrr::map_dbl(resp$retention, ~ .x$d1 %||% NA_real_)
+    metrics_data$retention_7_days <- purrr::map_dbl(resp$retention, ~ .x$d7 %||% NA_real_)
+  }
   
   return(metrics_data)
 }

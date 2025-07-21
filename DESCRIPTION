@@ -4,6 +4,8 @@ Title: R Client for Fortnite Ecosystem API
 Version: 0.1.0
 Authors@R: 
     person("Phillip", "Alday", , "phillip@example.com", role = c("aut", "cre"))
+Author: Phillip Alday
+Maintainer: Phillip Alday <phillip@example.com>
 Description: An R client for accessing the Fortnite Ecosystem API, allowing users
     to retrieve island metadata and engagement metrics.
 License: MIT + file LICENSE
