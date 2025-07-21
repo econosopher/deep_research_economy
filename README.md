@@ -60,7 +60,7 @@ Rscript scripts/01_top_10_islands_table.R
 Here's an example of a GT table generated using real data from the Fortnite Ecosystem API:
 
 <p align="left">
-  <img src="output/top_10_islands_table.png">
+  <img src="/output/top_10_islands_table.png">
 </p>
 
 
