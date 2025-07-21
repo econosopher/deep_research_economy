@@ -1,0 +1,221 @@
+{
+  "inputs": [
+    {
+      "id": "time",
+      "label": "Time",
+      "kind": "SINK_RED"
+    },
+    {
+      "id": "money",
+      "label": "Money",
+      "kind": "SINK_RED"
+    },
+    {
+      "id": "attention",
+      "label": "Attention",
+      "kind": "SINK_RED"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "matchmaking_gameplay",
+      "label": "Matchmaking & Gameplay",
+      "sources": [
+        "renown",
+        "xp",
+        "alpha_pack_chance",
+        "battle_pass_xp",
+        "event_currency"
+      ],
+      "sinks": [
+        "time",
+        "attention"
+      ],
+      "values": [
+        "clearance_level",
+        "mmr"
+      ]
+    },
+    {
+      "id": "challenges_progression",
+      "label": "Challenges & Progression",
+      "sources": [
+        "renown"
+      ],
+      "sinks": [
+        "time",
+        "attention"
+      ],
+      "values": []
+    },
+    {
+      "id": "operator_loadout_customization",
+      "label": "Operator & Loadout Customization",
+      "sources": [],
+      "sinks": [
+        "renown",
+        "r6_credits"
+      ],
+      "values": [
+        "unlocked_operators",
+        "attachments",
+        "operator_skills"
+      ]
+    },
+    {
+      "id": "cosmetic_acquisition",
+      "label": "Cosmetic Acquisition",
+      "sources": [],
+      "sinks": [
+        "renown",
+        "r6_credits",
+        "alpha_packs",
+        "event_currency"
+      ],
+      "values": [
+        "cosmetics"
+      ]
+    },
+    {
+      "id": "in_game_store",
+      "label": "In-Game Store",
+      "sources": [
+        "r6_credits"
+      ],
+      "sinks": [
+        "money"
+      ],
+      "values": []
+    },
+    {
+      "id": "battle_pass_progression",
+      "label": "Battle Pass Progression",
+      "sources": [
+        "battle_pass_rewards"
+      ],
+      "sinks": [
+        "time",
+        "r6_credits",
+        "attention",
+        "battle_pass_xp"
+      ],
+      "values": [
+        "battle_pass_tier"
+      ]
+    },
+    {
+      "id": "high_mmr_rank",
+      "label": "High MMR/Rank",
+      "sources": [],
+      "sinks": [],
+      "values": [],
+      "kind": "finalGood"
+    },
+    {
+      "id": "complete_operator_roster",
+      "label": "Complete Operator Roster",
+      "sources": [],
+      "sinks": [],
+      "values": [],
+      "kind": "finalGood"
+    },
+    {
+      "id": "extensive_cosmetic_collection",
+      "label": "Extensive Cosmetic Collection",
+      "sources": [],
+      "sinks": [],
+      "values": [],
+      "kind": "finalGood"
+    },
+    {
+      "id": "mastery_of_operator_skills",
+      "label": "Mastery of Operator Skills",
+      "sources": [],
+      "sinks": [],
+      "values": [],
+      "kind": "finalGood"
+    }
+  ],
+  "edges": [
+    [
+      "matchmaking_gameplay",
+      "challenges_progression"
+    ],
+    [
+      "challenges_progression",
+      "operator_loadout_customization"
+    ],
+    [
+      "in_game_store",
+      "cosmetic_acquisition"
+    ],
+    [
+      "in_game_store",
+      "operator_loadout_customization"
+    ],
+    [
+      "in_game_store",
+      "battle_pass_progression"
+    ],
+    [
+      "matchmaking_gameplay",
+      "cosmetic_acquisition"
+    ],
+    [
+      "matchmaking_gameplay",
+      "battle_pass_progression"
+    ],
+    [
+      "battle_pass_progression",
+      "cosmetic_acquisition"
+    ],
+    [
+      "operator_loadout_customization",
+      "complete_operator_roster"
+    ],
+    [
+      "cosmetic_acquisition",
+      "extensive_cosmetic_collection"
+    ],
+    [
+      "matchmaking_gameplay",
+      "high_mmr_rank"
+    ],
+    [
+      "operator_loadout_customization",
+      "mastery_of_operator_skills"
+    ]
+  ],
+  "subsections": [
+    {
+      "id": "core_gameplay_loop",
+      "label": "Core Gameplay Loop",
+      "nodeIds": [
+        "matchmaking_gameplay"
+      ]
+    },
+    {
+      "id": "progression_system",
+      "label": "Progression System",
+      "nodeIds": [
+        "challenges_progression",
+        "battle_pass_progression"
+      ]
+    },
+    {
+      "id": "customization_system",
+      "label": "Customization System",
+      "nodeIds": [
+        "operator_loadout_customization",
+        "cosmetic_acquisition"
+      ]
+    },
+    {
+      "id": "monetization_system",
+      "label": "Monetization System",
+      "nodeIds": [
+        "in_game_store"
+      ]
+    }
+  ]
+}
