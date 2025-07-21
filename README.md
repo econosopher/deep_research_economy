@@ -59,7 +59,7 @@ Rscript scripts/01_top_10_islands_table.R
 
 Here's an example of a GT table generated using real data from the Fortnite Ecosystem API:
 
-![Top 10 Fortnite Islands Table](output/top_10_islands_table.png)
+![Top 10 Fortnite Islands Table](ouput/top_10_islands_table.png)
 
 *This table shows the top performing Fortnite Creative Islands ranked by unique players, displaying comprehensive engagement metrics (unique players, total plays, average play time, peak CCU) and retention data (D1 and D7 retention rates).*
 
