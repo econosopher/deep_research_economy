@@ -1,6 +1,6 @@
 Package: fortniteR
 Type: Package
-Title: Access Fortnite Ecosystem API from R
+Title: Access 'Fortnite Ecosystem' API
 Version: 0.1.0
 Authors@R: 
     person("Phillip", "Black",
@@ -8,9 +8,9 @@ Authors@R:
            role = c("aut", "cre"))
 Author: Phillip Black [aut, cre]
 Maintainer: Phillip Black <pblack@gameeconomistconsulting.com>
-Description: An R client for accessing the Fortnite Ecosystem API, allowing users
+Description: Client for accessing the 'Fortnite Ecosystem' API, allowing users
     to retrieve island metadata and engagement metrics. The package provides functions
-    to search for Fortnite Creative islands, retrieve detailed metadata about specific
+    to search for 'Fortnite Creative' islands, retrieve detailed metadata about specific
     islands including titles, descriptions, and tags, and access engagement metrics
     such as daily active users and play duration. It supports pagination for large
     result sets and time-series analysis of island performance. The API endpoint is
