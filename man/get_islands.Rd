@@ -22,6 +22,15 @@ A tibble with island data
 Get list of Fortnite Creative islands
 }
 \examples{
+# Example with mock response
+mock_response <- list(
+  islands = list(
+    list(code = "1234-5678-9012", title = "Mock Island"),
+    list(code = "2345-6789-0123", title = "Test Island")
+  )
+)
+# In practice, this would come from the API
+
 \dontrun{
 islands <- get_islands(limit = 50)
 }

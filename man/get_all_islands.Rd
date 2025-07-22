@@ -2,7 +2,7 @@
 % Please edit documentation in R/islands.R
 \name{get_all_islands}
 \alias{get_all_islands}
-\title{Helper function to handle NULL values}
+\title{Get all islands with pagination support}
 \usage{
 get_all_islands(max_pages = 10, page_size = 100)
 }
@@ -15,9 +15,17 @@ get_all_islands(max_pages = 10, page_size = 100)
 A tibble with all island data
 }
 \description{
-Helper function to handle NULL values
+Get all islands with pagination support
 }
 \examples{
+# Example showing expected output structure
+mock_all_islands <- tibble::tibble(
+  code = c("1234-5678-9012", "2345-6789-0123"),
+  title = c("Island 1", "Island 2"),
+  page_fetched = c(1, 1)
+)
+# In practice, this would aggregate results from multiple API pages
+
 \dontrun{
 # Get all islands (up to 1000)
 all_islands <- get_all_islands()

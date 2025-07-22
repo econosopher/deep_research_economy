@@ -9,6 +9,15 @@
 #' @export
 #'
 #' @examples
+#' # Example with mock response
+#' mock_response <- list(
+#'   islands = list(
+#'     list(code = "1234-5678-9012", title = "Mock Island"),
+#'     list(code = "2345-6789-0123", title = "Test Island")
+#'   )
+#' )
+#' # In practice, this would come from the API
+#' 
 #' \dontrun{
 #' islands <- get_islands(limit = 50)
 #' }
@@ -55,6 +64,15 @@ get_islands <- function(limit = 50, offset = 0, order_by = "plays", order = "des
 #' @export
 #'
 #' @examples
+#' # Example with mock metadata structure
+#' mock_metadata <- list(
+#'   code = "1234-5678-9012",
+#'   title = "Mock Island",
+#'   description = "A test island",
+#'   tags = c("adventure", "multiplayer")
+#' )
+#' # In practice, this would come from the API
+#' 
 #' \dontrun{
 #' island <- get_island_metadata("1234-5678-9012")
 #' }
@@ -81,6 +99,14 @@ get_island_metadata <- function(code) {
 #' @export
 #'
 #' @examples
+#' # Example with mock metrics structure
+#' mock_metrics <- tibble::tibble(
+#'   date = as.Date(c("2024-01-01", "2024-01-02")),
+#'   dau = c(1000, 1200),
+#'   play_duration = c(45.5, 48.2)
+#' )
+#' # In practice, this would come from the API
+#' 
 #' \dontrun{
 #' metrics <- get_island_metrics(
 #'   code = "1234-5678-9012",
@@ -180,6 +206,14 @@ get_island_metrics <- function(code, start_date, end_date, interval = "day") {
 #' @export
 #'
 #' @examples
+#' # Example showing expected output structure
+#' mock_all_islands <- tibble::tibble(
+#'   code = c("1234-5678-9012", "2345-6789-0123"),
+#'   title = c("Island 1", "Island 2"),
+#'   page_fetched = c(1, 1)
+#' )
+#' # In practice, this would aggregate results from multiple API pages
+#' 
 #' \dontrun{
 #' # Get all islands (up to 1000)
 #' all_islands <- get_all_islands()

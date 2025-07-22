@@ -16,6 +16,15 @@ A list with detailed island metadata
 Get specific island metadata
 }
 \examples{
+# Example with mock metadata structure
+mock_metadata <- list(
+  code = "1234-5678-9012",
+  title = "Mock Island",
+  description = "A test island",
+  tags = c("adventure", "multiplayer")
+)
+# In practice, this would come from the API
+
 \dontrun{
 island <- get_island_metadata("1234-5678-9012")
 }

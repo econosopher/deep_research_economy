@@ -6,6 +6,10 @@
 #' @export
 #'
 #' @examples
+#' # Example showing request structure
+#' endpoint <- "islands"
+#' # This would construct an httr2 request object
+#' 
 #' \dontrun{
 #' req <- fortnite_request("islands")
 #' }

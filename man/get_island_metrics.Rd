@@ -22,6 +22,14 @@ A tibble with engagement metrics
 Get island engagement metrics
 }
 \examples{
+# Example with mock metrics structure
+mock_metrics <- tibble::tibble(
+  date = as.Date(c("2024-01-01", "2024-01-02")),
+  dau = c(1000, 1200),
+  play_duration = c(45.5, 48.2)
+)
+# In practice, this would come from the API
+
 \dontrun{
 metrics <- get_island_metrics(
   code = "1234-5678-9012",
