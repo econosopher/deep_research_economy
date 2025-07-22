@@ -1,27 +1,27 @@
 Package: fortniteR
 Type: Package
-Title: R Client for Fortnite Ecosystem API
+Title: Access Fortnite Ecosystem API from R
 Version: 0.1.0
 Authors@R: 
-    person("Phillip", "Alday", , "phillip@example.com", role = c("aut", "cre"))
-Author: Phillip Alday
-Maintainer: Phillip Alday <phillip@example.com>
+    person("Phillip", "Black",
+           email = "pblack@gameeconomistconsulting.com",
+           role = c("aut", "cre"))
+Author: Phillip Black [aut, cre]
+Maintainer: Phillip Black <pblack@gameeconomistconsulting.com>
 Description: An R client for accessing the Fortnite Ecosystem API, allowing users
     to retrieve island metadata and engagement metrics.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
+Depends: R (>= 4.1.0)
 Imports:
     httr2,
-    jsonlite,
     tibble,
     dplyr,
-    tidyr,
-    purrr,
-    gt,
-    ggplot2,
-    lubridate
+    purrr
 Suggests:
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    rhub,
+    rcmdcheck
 Config/testthat/edition: 3
+

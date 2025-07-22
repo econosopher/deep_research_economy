@@ -171,8 +171,6 @@ get_island_metrics <- function(code, start_date, end_date, interval = "day") {
   return(metrics_data)
 }
 
-#' Helper function to handle NULL values
-#' @noRd
 #' Get all islands with pagination support
 #'
 #' @param max_pages Maximum number of pages to fetch (default: 10)
