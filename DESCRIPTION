@@ -8,7 +8,7 @@ Authors@R:
            role = c("aut", "cre"))
 Author: Phillip Black [aut, cre]
 Maintainer: Phillip Black <pblack@gameeconomistconsulting.com>
-Description: Client for accessing the 'Fortnite Ecosystem' API, allowing users
+Description: Interface for accessing the 'Fortnite Ecosystem' API, allowing users
     to retrieve island metadata and engagement metrics. The package provides functions
     to search for 'Fortnite Creative' islands, retrieve detailed metadata about specific
     islands including titles, descriptions, and tags, and access engagement metrics
