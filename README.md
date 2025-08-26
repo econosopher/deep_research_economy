@@ -4,19 +4,21 @@ A sophisticated tool for generating game economy flow charts using AI providers 
 
 ## Features
 
-- **Multi-Provider Support**: Seamlessly switch between Claude (3.5 Sonnet) and Gemini (2.0 Flash) for economy analysis
-- **Deep Research Process**: Multi-phase research approach for comprehensive game economy analysis
+- **Multi-Provider Support**: Seamlessly switch between Claude (3.5 Sonnet) and Gemini (2.5 Pro) for economy analysis
+- **Deep Research Process**: Optimized 2-phase research approach leveraging Gemini 2.5's enhanced capabilities
 - **Secure API Management**: Encrypted storage of API keys with machine-specific encryption
 - **Validated Output**: Ensures generated JSON follows the required economy flow schema
 - **Modular Architecture**: Clean separation between providers, configuration, and core logic
 - **Extensible Design**: Easy to add new AI providers or modify research strategies
+ - **Structured JSON Generation (Gemini)**: Uses schema-guided responses to enforce the correct shape
+ - **Auto ID Normalization**: Automatically converts ids to snake_case and updates edges
 
 ## Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/econosopher/deep-research-economy.git
-cd deep-research-economy
+git clone https://github.com/econosopher/deep_research_economy.git
+cd deep_research_economy
 ```
 
 2. Install dependencies:
@@ -30,8 +32,8 @@ python3 economy_json_builder.py setup
 ```
 
 This will guide you through:
-- Setting up API keys for Claude and/or Gemini (encrypted and stored securely)
-- Configuring your default provider
+- Setting up API keys for Gemini and/or Claude (encrypted and stored securely)
+- Configuring your default provider (Gemini by default)
 - Setting the repository path (optional)
 
 Your API keys are encrypted using machine-specific keys and stored in `~/.economy_json_builder/`
@@ -50,17 +52,47 @@ python3 economy_json_builder.py generate game_info.md "Game Title"
 
 ```bash
 # Use a specific provider
-python3 economy_json_builder.py generate --provider gemini game_info.md "Rainbow Six Siege"
+python3 economy_json_builder.py generate --provider gemini inputs/rainbow_six_siege.md "Rainbow Six Siege"
 
 # Specify output filename
-python3 economy_json_builder.py generate --output-name custom_name.json game_info.md "Game Title"
+python3 economy_json_builder.py generate --output-name custom_name.json inputs/game_info.md "Game Title"
 
-# Use a specific Gemini model
-python3 economy_json_builder.py generate --provider gemini --model gemini-1.5-pro game_info.md "Game Title"
+# Use a specific Gemini model (defaults to gemini-2.5-pro)
+python3 economy_json_builder.py generate --provider gemini --model gemini-2.5-flash inputs/game_info.md "Game Title"
 
 # Skip creating a pull request
-python3 economy_json_builder.py generate --no-pr game_info.md "Game Title"
+python3 economy_json_builder.py generate --no-pr inputs/game_info.md "Game Title"
+
+# Increase detail depth and auto-repair retries
+python3 economy_json_builder.py generate \
+  --provider gemini \
+  --depth 2 \
+  --retries 1 \
+  game_info.md "Game Title"
+
+### Quick Generate: Palia (Gemini)
+
+With `inputs/palia.md` included, generate a Palia economy JSON (skipping PR):
+
+```bash
+python3 economy_json_builder.py generate --provider gemini --no-pr inputs/palia.md "Palia"
 ```
+
+### Validate Existing JSON
+
+Use the built-in validator to ensure JSON conforms to the schema rules:
+
+```bash
+python3 economy_json_builder.py validate output/palia_gemini.json
+# Auto-fix structural issues and normalize ids in-place (writes .bak)
+python3 economy_json_builder.py validate --fix output/palia_gemini.json
+```
+
+Notes:
+- Gemini generation uses a structured response schema where supported, reducing invalid JSON.
+- During generation, the tool normalizes ids to snake_case and updates all edge references accordingly.
+- Validator can auto-fix common issues with `--fix` (safely writes a .bak first).
+ - `--depth` asks for more granular nodes per category; `--retries` will auto-repair if lint/validation flags issues.
 
 ### Input Format
 
@@ -91,8 +123,8 @@ Example output structure:
 ```json
 {
   "inputs": [
-    {"id": "time", "label": "Time", "kind": "SINK_RED"},
-    {"id": "money", "label": "Money", "kind": "SINK_RED"}
+    {"id": "time", "label": "Time", "kind": "initial_sink_node"},
+    {"id": "money", "label": "Money", "kind": "initial_sink_node"}
   ],
   "nodes": [
     {
@@ -115,14 +147,60 @@ Example output structure:
 ```
 economy_json_providers/
 ├── economy_json_builder.py     # Main entry point
+├── api_server.py              # Flask REST API server
 ├── providers/                  # AI provider implementations
 │   ├── base_provider.py       # Abstract base class
 │   ├── claude_provider.py     # Claude implementation
 │   ├── gemini_provider.py     # Gemini implementation
+│   ├── prompts.py            # Centralized prompt templates
 │   ├── config.py             # Configuration management
 │   └── secure_config.py      # Secure API key storage
 ├── output/                    # Generated JSON files
-└── test_economy_json.py      # Test suite
+├── test_economy_json.py      # Core test suite
+└── test_api.py               # API endpoint tests
+```
+
+## Flask REST API Integration
+
+The project includes a Flask REST API server that enables integration with external tools like the Figma Economy Flow Plugin.
+
+### Starting the API Server
+
+```bash
+# Install Flask dependencies
+pip3 install flask flask-cors
+
+# Start the server (default port 5001)
+PORT=5001 python3 api_server.py
+```
+
+### API Endpoints
+
+- `GET /health` - Server health check
+- `POST /api/research/cache` - Generate research cache for prompt building
+- `POST /api/research/generate` - Generate complete economy JSON using LLM
+- `POST /api/research/validate` - Validate economy JSON structure
+- `GET /api/research/session/{id}` - Retrieve session data
+- `GET /api/templates` - List available template files
+
+### Integration with Figma Plugin
+
+The Flask API enables the Figma Economy Flow Plugin to:
+1. Generate research caches for game economy analysis
+2. Create complete economy JSONs using Gemini/Claude providers
+3. Validate JSON structures before visualization
+4. Manage research sessions across requests
+
+For detailed architecture documentation, see [FLASK_ARCHITECTURE.md](./FLASK_ARCHITECTURE.md).
+
+### Testing the API
+
+```bash
+# Run unit tests
+python3 test_api.py
+
+# Test endpoints manually
+curl http://localhost:5001/health
 ```
 
 ## Provider Details
@@ -133,9 +211,10 @@ economy_json_providers/
 - Excels at understanding complex game systems
 
 ### Gemini Provider
-- Supports multiple models (2.0 Flash, 1.5 Pro, 1.5 Flash)
-- Three-phase deep research process
-- Optimized for fast, comprehensive analysis
+- Supports multiple models (2.5 Pro default, 2.5 Flash, 2.0 Flash, 1.5 Pro, 1.5 Flash)
+- Optimized 2-phase deep research process (leveraging Gemini 2.5's enhanced reasoning)
+- Comprehensive analysis in Phase 1, direct JSON generation in Phase 2
+- Better structured output with native JSON mode
 
 ## Security
 

@@ -3,17 +3,17 @@
     {
       "id": "time",
       "label": "Time",
-      "kind": "SINK_RED"
+      "kind": "initial_sink_node"
     },
     {
       "id": "money",
       "label": "Money",
-      "kind": "SINK_RED"
+      "kind": "initial_sink_node"
     },
     {
       "id": "attention",
       "label": "Attention",
-      "kind": "SINK_RED"
+      "kind": "initial_sink_node"
     }
   ],
   "nodes": [
@@ -109,7 +109,7 @@
       "sources": [],
       "sinks": [],
       "values": [],
-      "kind": "finalGood"
+      "kind": "final_good"
     },
     {
       "id": "complete_operator_roster",
@@ -117,7 +117,7 @@
       "sources": [],
       "sinks": [],
       "values": [],
-      "kind": "finalGood"
+      "kind": "final_good"
     },
     {
       "id": "extensive_cosmetic_collection",
@@ -125,7 +125,7 @@
       "sources": [],
       "sinks": [],
       "values": [],
-      "kind": "finalGood"
+      "kind": "final_good"
     },
     {
       "id": "mastery_of_operator_skills",
@@ -133,7 +133,7 @@
       "sources": [],
       "sinks": [],
       "values": [],
-      "kind": "finalGood"
+      "kind": "final_good"
     }
   ],
   "edges": [

@@ -1,0 +1,568 @@
+{
+  "inputs": [
+    {
+      "id": "time",
+      "label": "Time",
+      "kind": "initial_sink_node"
+    },
+    {
+      "id": "money",
+      "label": "Money",
+      "kind": "initial_sink_node"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "to_gather_raw_materials",
+      "label": "To Gather Raw Materials",
+      "sources": [
+        "Wood",
+        "Stone",
+        "Ore",
+        "Bugs",
+        "Fish",
+        "Foraged Items",
+        "Animal Drops",
+        "Fishing XP"
+      ],
+      "sinks": [
+        "Time"
+      ],
+      "values": [
+        "Foraging XP",
+        "Mining XP",
+        "Bug Catching XP",
+        "Hunting XP",
+        "Legendary Collection"
+      ]
+    },
+    {
+      "id": "to_farm_crops",
+      "label": "To Farm Crops",
+      "sources": [
+        "Crops"
+      ],
+      "sinks": [
+        "Seeds",
+        "Time"
+      ],
+      "values": [
+        "Gardening XP",
+        "Legendary Collection"
+      ]
+    },
+    {
+      "id": "to_refine_materials",
+      "label": "To Refine Materials",
+      "sources": [
+        "Planks",
+        "Ingots",
+        "Fabric",
+        "Leather"
+      ],
+      "sinks": [
+        "Wood",
+        "Stone",
+        "Ore",
+        "Cotton",
+        "Hide",
+        "Time"
+      ],
+      "values": [
+        "Crafting XP"
+      ]
+    },
+    {
+      "id": "to_cook_meals",
+      "label": "To Cook Meals",
+      "sources": [
+        "Cooked Dishes",
+        "Focus"
+      ],
+      "sinks": [
+        "Crops",
+        "Fish",
+        "Meat",
+        "Foraged Items",
+        "Time"
+      ],
+      "values": [
+        "Cooking XP",
+        "Legendary Collection"
+      ]
+    },
+    {
+      "id": "to_craft_items",
+      "label": "To Craft Items",
+      "sources": [
+        "Furniture",
+        "Tools",
+        "Bait",
+        "Fertilizers"
+      ],
+      "sinks": [
+        "Planks",
+        "Ingots",
+        "Fabric",
+        "Leather",
+        "Raw Materials",
+        "Time",
+        "Recipes Blueprints"
+      ],
+      "values": [
+        "Furniture Making XP",
+        "Legendary Collection"
+      ]
+    },
+    {
+      "id": "to_sell_items",
+      "label": "To Sell Items",
+      "sources": [
+        "Gold"
+      ],
+      "sinks": [
+        "Raw Materials",
+        "Refined Materials",
+        "Crafted Goods",
+        "Cooked Dishes"
+      ],
+      "values": []
+    },
+    {
+      "id": "to_buy_items",
+      "label": "To Buy Items",
+      "sources": [
+        "Seeds",
+        "Basic Decor",
+        "Ingredients"
+      ],
+      "sinks": [
+        "Gold",
+        "Time"
+      ],
+      "values": [
+        "Legendary Collection"
+      ]
+    },
+    {
+      "id": "to_complete_quests",
+      "label": "To Complete Quests",
+      "sources": [
+        "Gold",
+        "Items",
+        "Recipes Blueprints"
+      ],
+      "sinks": [
+        "Time",
+        "Quest Items"
+      ],
+      "values": [
+        "Story Progress",
+        "Skill Levels",
+        "Reputation Friendship Levels",
+        "Renown",
+        "Completed Quests",
+        "Legendary Collection",
+        "Story Completion"
+      ]
+    },
+    {
+      "id": "to_gift_npcs",
+      "label": "To Gift NPCs",
+      "sources": [],
+      "sinks": [
+        "Items",
+        "Time"
+      ],
+      "values": [
+        "Reputation Friendship Levels",
+        "Strong Relationships",
+        "Legendary Collection"
+      ]
+    },
+    {
+      "id": "to_upgrade_tools",
+      "label": "To Upgrade Tools",
+      "sources": [
+        "Upgraded Tools"
+      ],
+      "sinks": [
+        "Gold",
+        "Raw Materials",
+        "Refined Materials",
+        "Time"
+      ],
+      "values": []
+    },
+    {
+      "id": "to_expand_housing_storage",
+      "label": "To expand housing & Storage",
+      "sources": [
+        "Inventory Slots",
+        "Storage Space"
+      ],
+      "sinks": [
+        "Gold",
+        "Time"
+      ],
+      "values": [
+        "Renown"
+      ]
+    },
+    {
+      "id": "to_gain_focus",
+      "label": "To Gain Focus",
+      "sources": [
+        "Focus"
+      ],
+      "sinks": [
+        "Cooked Dishes",
+        "Time"
+      ],
+      "values": []
+    },
+    {
+      "id": "to_gain_skill_levels",
+      "label": "To Gain Skill Levels",
+      "sources": [
+        "Recipes Blueprints",
+        "Tool Upgrade Tiers",
+        "Access To Higher Tier Resources"
+      ],
+      "sinks": [
+        "Focus",
+        "Time"
+      ],
+      "values": [
+        "Skill Levels",
+        "Maxed Skills"
+      ]
+    },
+    {
+      "id": "to_customize_home",
+      "label": "To Customize Home",
+      "sources": [],
+      "sinks": [
+        "Furniture",
+        "Gold",
+        "Time"
+      ],
+      "values": [
+        "Renown",
+        "Decorated Home"
+      ]
+    },
+    {
+      "id": "to_socialize_cooperate",
+      "label": "To socialize & Cooperate",
+      "sources": [],
+      "sinks": [
+        "Time"
+      ],
+      "values": [
+        "Community Contribution"
+      ]
+    },
+    {
+      "id": "to_acquire_cosmetics",
+      "label": "To Acquire Cosmetics",
+      "sources": [
+        "Cosmetic Outfits",
+        "Pet Companions",
+        "Cosmetic Housing Decor"
+      ],
+      "sinks": [
+        "Money"
+      ],
+      "values": [
+        "Wardrobe Collection"
+      ]
+    }
+  ],
+  "edges": [
+    [
+      "time",
+      "to_gather_raw_materials"
+    ],
+    [
+      "time",
+      "to_farm_crops"
+    ],
+    [
+      "time",
+      "to_refine_materials"
+    ],
+    [
+      "time",
+      "to_cook_meals"
+    ],
+    [
+      "time",
+      "to_craft_items"
+    ],
+    [
+      "time",
+      "to_sell_items"
+    ],
+    [
+      "time",
+      "to_buy_items"
+    ],
+    [
+      "time",
+      "to_complete_quests"
+    ],
+    [
+      "time",
+      "to_gift_npcs"
+    ],
+    [
+      "time",
+      "to_upgrade_tools"
+    ],
+    [
+      "time",
+      "to_expand_housing_storage"
+    ],
+    [
+      "time",
+      "to_gain_focus"
+    ],
+    [
+      "time",
+      "to_gain_skill_levels"
+    ],
+    [
+      "time",
+      "to_customize_home"
+    ],
+    [
+      "time",
+      "to_socialize_cooperate"
+    ],
+    [
+      "money",
+      "to_acquire_cosmetics"
+    ],
+    [
+      "to_gather_raw_materials",
+      "to_refine_materials"
+    ],
+    [
+      "to_gather_raw_materials",
+      "to_cook_meals"
+    ],
+    [
+      "to_gather_raw_materials",
+      "to_craft_items"
+    ],
+    [
+      "to_gather_raw_materials",
+      "to_sell_items"
+    ],
+    [
+      "to_gather_raw_materials",
+      "to_upgrade_tools"
+    ],
+    [
+      "to_gather_raw_materials",
+      "to_gift_npcs"
+    ],
+    [
+      "to_gather_raw_materials",
+      "to_gain_skill_levels"
+    ],
+    [
+      "to_farm_crops",
+      "to_cook_meals"
+    ],
+    [
+      "to_farm_crops",
+      "to_refine_materials"
+    ],
+    [
+      "to_farm_crops",
+      "to_sell_items"
+    ],
+    [
+      "to_farm_crops",
+      "to_gift_npcs"
+    ],
+    [
+      "to_farm_crops",
+      "to_gain_skill_levels"
+    ],
+    [
+      "to_refine_materials",
+      "to_craft_items"
+    ],
+    [
+      "to_refine_materials",
+      "to_upgrade_tools"
+    ],
+    [
+      "to_refine_materials",
+      "to_sell_items"
+    ],
+    [
+      "to_refine_materials",
+      "to_gain_skill_levels"
+    ],
+    [
+      "to_cook_meals",
+      "to_gain_focus"
+    ],
+    [
+      "to_cook_meals",
+      "to_sell_items"
+    ],
+    [
+      "to_cook_meals",
+      "to_gift_npcs"
+    ],
+    [
+      "to_cook_meals",
+      "to_gain_skill_levels"
+    ],
+    [
+      "to_craft_items",
+      "to_customize_home"
+    ],
+    [
+      "to_craft_items",
+      "to_upgrade_tools"
+    ],
+    [
+      "to_craft_items",
+      "to_sell_items"
+    ],
+    [
+      "to_craft_items",
+      "to_gift_npcs"
+    ],
+    [
+      "to_craft_items",
+      "to_gain_skill_levels"
+    ],
+    [
+      "to_sell_items",
+      "to_buy_items"
+    ],
+    [
+      "to_sell_items",
+      "to_upgrade_tools"
+    ],
+    [
+      "to_sell_items",
+      "to_expand_housing_storage"
+    ],
+    [
+      "to_sell_items",
+      "to_customize_home"
+    ],
+    [
+      "to_buy_items",
+      "to_craft_items"
+    ],
+    [
+      "to_complete_quests",
+      "to_buy_items"
+    ],
+    [
+      "to_complete_quests",
+      "to_upgrade_tools"
+    ],
+    [
+      "to_complete_quests",
+      "to_expand_housing_storage"
+    ],
+    [
+      "to_complete_quests",
+      "to_customize_home"
+    ],
+    [
+      "to_complete_quests",
+      "to_gift_npcs"
+    ],
+    [
+      "to_complete_quests",
+      "to_gain_skill_levels"
+    ],
+    [
+      "to_gift_npcs",
+      "to_expand_housing_storage"
+    ],
+    [
+      "to_gift_npcs",
+      "to_buy_items"
+    ],
+    [
+      "to_gift_npcs",
+      "to_complete_quests"
+    ],
+    [
+      "to_gain_focus",
+      "to_gain_skill_levels"
+    ],
+    [
+      "to_gain_skill_levels",
+      "to_craft_items"
+    ],
+    [
+      "to_gain_skill_levels",
+      "to_upgrade_tools"
+    ],
+    [
+      "to_gain_skill_levels",
+      "to_gather_raw_materials"
+    ]
+  ],
+  "subsections": [
+    {
+      "id": "resource_acquisition",
+      "label": "Resource Acquisition",
+      "nodeIds": [
+        "to_gather_raw_materials",
+        "to_farm_crops"
+      ]
+    },
+    {
+      "id": "processing_crafting",
+      "label": "Processing & Crafting",
+      "nodeIds": [
+        "to_refine_materials",
+        "to_cook_meals",
+        "to_craft_items"
+      ]
+    },
+    {
+      "id": "economy_progression",
+      "label": "Economy & Progression",
+      "nodeIds": [
+        "to_sell_items",
+        "to_buy_items",
+        "to_complete_quests",
+        "to_gift_npcs",
+        "to_upgrade_tools",
+        "to_expand_housing_storage",
+        "to_gain_focus",
+        "to_gain_skill_levels"
+      ]
+    },
+    {
+      "id": "social_customization",
+      "label": "Social & Customization",
+      "nodeIds": [
+        "to_customize_home",
+        "to_socialize_cooperate"
+      ]
+    },
+    {
+      "id": "monetization",
+      "label": "Monetization",
+      "nodeIds": [
+        "to_acquire_cosmetics"
+      ]
+    }
+  ]
+}

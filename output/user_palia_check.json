@@ -1,0 +1,522 @@
+{
+  "edges": [
+    [
+      "time",
+      "gather_forage_mine"
+    ],
+    [
+      "energy",
+      "gather_forage_mine"
+    ],
+    [
+      "gather_forage_mine",
+      "foraged_items"
+    ],
+    [
+      "time",
+      "farm_garden"
+    ],
+    [
+      "energy",
+      "farm_garden"
+    ],
+    [
+      "farm_garden",
+      "growing_crops"
+    ],
+    [
+      "time",
+      "cook"
+    ],
+    [
+      "time",
+      "craft_refine"
+    ],
+    [
+      "craft_refine",
+      "basic_tools_items"
+    ],
+    [
+      "craft_refine",
+      "advanced_tools_furniture_equipment"
+    ],
+    [
+      "basic_tools_items",
+      "progression_towards_advanced_crafting"
+    ],
+    [
+      "advanced_tools_furniture_equipment",
+      "housing_decoration"
+    ],
+    [
+      "advanced_tools_furniture_equipment",
+      "increased_gathering_crafting_efficiency"
+    ],
+    [
+      "time",
+      "quest_socialize"
+    ],
+    [
+      "quest_socialize",
+      "unlocks"
+    ],
+    [
+      "quest_socialize",
+      "progression"
+    ],
+    [
+      "quest_socialize",
+      "story_advancement"
+    ],
+    [
+      "quest_socialize",
+      "relationship_building"
+    ],
+    [
+      "time",
+      "trade_exchange"
+    ],
+    [
+      "trade_exchange",
+      "consistent_income"
+    ],
+    [
+      "time",
+      "housing_decoration"
+    ],
+    [
+      "housing_decoration",
+      "furniture"
+    ],
+    [
+      "housing_decoration",
+      "larger_house"
+    ],
+    [
+      "housing_decoration",
+      "new_housing_features"
+    ],
+    [
+      "housing_decoration",
+      "decorated_house"
+    ],
+    [
+      "housing_decoration",
+      "increased_storage"
+    ],
+    [
+      "housing_decoration",
+      "aesthetic_improvement"
+    ],
+    [
+      "housing_decoration",
+      "potential_gameplay_benefits"
+    ],
+    [
+      "furniture",
+      "housing_decoration"
+    ],
+    [
+      "decorative_items",
+      "housing_decoration"
+    ]
+  ],
+  "inputs": [
+    {
+      "id": "time",
+      "kind": "initial_sink_node",
+      "label": "Time"
+    },
+    {
+      "id": "energy",
+      "kind": "initial_sink_node",
+      "label": "Energy"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "gather_forage_mine",
+      "label": "To gather, forage, & Mine",
+      "sinks": [
+        "Time",
+        "Energy"
+      ],
+      "sources": [
+        "To Gold",
+        "To Crafting Materials",
+        "To Gifting (Renown)"
+      ],
+      "values": [
+        "Foraged Items",
+        "Gold",
+        "Crafting Materials",
+        "Gifting (Renown)"
+      ]
+    },
+    {
+      "id": "farm_garden",
+      "label": "To farm & Garden",
+      "sinks": [
+        "Time",
+        "Energy"
+      ],
+      "sources": [
+        "To Gold",
+        "To Gifting (Renown)",
+        "To Cooking Ingredients"
+      ],
+      "values": [
+        "Growing Crops",
+        "Gold",
+        "Cooking Ingredients",
+        "Gifting (Renown)"
+      ]
+    },
+    {
+      "id": "cook",
+      "label": "To Cook",
+      "sinks": [
+        "Time",
+        "Cooking Ingredients",
+        "Rare Ingredients",
+        "Very Rare Ingredients",
+        "To Cooking Ingredients",
+        "To Rare Ingredients",
+        "To Very Rare Ingredients"
+      ],
+      "sources": [
+        "To Basic Dishes",
+        "To Advanced Dishes",
+        "To Mastery Dishes",
+        "To Cooking XP"
+      ],
+      "values": [
+        "Basic Dishes",
+        "Advanced Dishes",
+        "Mastery Dishes",
+        "Cooking XP"
+      ]
+    },
+    {
+      "id": "craft_refine",
+      "label": "To craft & Refine",
+      "sinks": [
+        "Time",
+        "Common Materials",
+        "Refined Materials",
+        "Rare Components",
+        "To Common Materials",
+        "To Refined Materials",
+        "To Rare Components"
+      ],
+      "sources": [
+        "To Crafting XP"
+      ],
+      "values": [
+        "Basic Tools & Items",
+        "Crafting XP",
+        "Advanced Tools, Furniture & Equipment"
+      ]
+    },
+    {
+      "id": "quest_socialize",
+      "label": "To quest & Socialize",
+      "sinks": [
+        "Time"
+      ],
+      "sources": [
+        "To Gold",
+        "To Quest Items",
+        "To Renown",
+        "To Recipes"
+      ],
+      "values": [
+        "Gold",
+        "Renown",
+        "Quest Items",
+        "Recipes",
+        "Unlocks",
+        "Progression",
+        "Story Advancement",
+        "Relationship Building"
+      ]
+    },
+    {
+      "id": "trade_exchange",
+      "label": "To trade & Exchange",
+      "sinks": [
+        "Time"
+      ],
+      "sources": [
+        "To Gold",
+        "To Desired Items",
+        "To Acquiring Specific Resources"
+      ],
+      "values": [
+        "Gold",
+        "Desired Items",
+        "Consistent Income",
+        "Acquiring Specific Resources"
+      ]
+    },
+    {
+      "id": "housing_decoration",
+      "label": "To decorate hous",
+      "sinks": [
+        "Time",
+        "Materials",
+        "Gold",
+        "Resources",
+        "Furniture",
+        "Decorative Items",
+        "To Gold",
+        "To Materials",
+        "To Resources"
+      ],
+      "sources": [
+        "To Personal EXPression"
+      ],
+      "values": [
+        "Furniture",
+        "Larger House",
+        "New Housing Features",
+        "Decorated House",
+        "Increased Storage",
+        "Aesthetic Improvement",
+        "Personal Expression",
+        "Potential Gameplay Benefits"
+      ]
+    },
+    {
+      "id": "foraged_items",
+      "label": "Foraged Items",
+      "sinks": [],
+      "sources": [
+        "Gather Forage Mine"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "growing_crops",
+      "label": "Growing Crops",
+      "sinks": [],
+      "sources": [
+        "Farm Garden"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "basic_tools_items",
+      "label": "Basic tools & Items",
+      "sinks": [],
+      "sources": [
+        "Craft Refine",
+        "To Utility"
+      ],
+      "values": [
+        "Utility",
+        "Progression Towards Advanced Crafting"
+      ],
+      "kind": "final_good"
+    },
+    {
+      "id": "advanced_tools_furniture_equipment",
+      "label": "Advanced tools, furniture & Equipment",
+      "sinks": [],
+      "sources": [
+        "Craft Refine",
+        "To Improved Utility"
+      ],
+      "values": [
+        "Improved Utility",
+        "Housing Decoration",
+        "Increased Gathering & Crafting Efficiency"
+      ],
+      "kind": "final_good"
+    },
+    {
+      "id": "unlocks",
+      "label": "Unlocks",
+      "sinks": [],
+      "sources": [
+        "Quest Socialize"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "progression",
+      "label": "Progression",
+      "sinks": [],
+      "sources": [
+        "Quest Socialize"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "story_advancement",
+      "label": "Story Advancement",
+      "sinks": [],
+      "sources": [
+        "Quest Socialize"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "relationship_building",
+      "label": "Relationship build",
+      "sinks": [],
+      "sources": [
+        "Quest Socialize"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "unlocking_new_items_quests_opportunities",
+      "label": "Unlocking new items, quests & Opportunities",
+      "sinks": [],
+      "sources": [
+        "Gifting Renown"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "consistent_income",
+      "label": "Consistent Income",
+      "sinks": [],
+      "sources": [
+        "Trade Exchange"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "furniture",
+      "label": "Furniture",
+      "sinks": [
+        "Housing Decoration"
+      ],
+      "sources": [
+        "Housing Decoration"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "larger_house",
+      "label": "Larger House",
+      "sinks": [],
+      "sources": [
+        "Housing Decoration"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "new_housing_features",
+      "label": "New Housing Features",
+      "sinks": [],
+      "sources": [
+        "Housing Decoration"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "decorated_house",
+      "label": "Decorated House",
+      "sinks": [],
+      "sources": [
+        "Housing Decoration"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "increased_storage",
+      "label": "Increased Storage",
+      "sinks": [],
+      "sources": [
+        "Housing Decoration"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "aesthetic_improvement",
+      "label": "Aesthetic Improvement",
+      "sinks": [],
+      "sources": [
+        "Housing Decoration"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "potential_gameplay_benefits",
+      "label": "Potential Gameplay Benefits",
+      "sinks": [],
+      "sources": [
+        "Housing Decoration"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "decorative_items",
+      "label": "Decorative Items",
+      "sinks": [
+        "Housing Decoration"
+      ],
+      "sources": [],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "high_value_for_trading",
+      "label": "High value for trade",
+      "sinks": [],
+      "sources": [
+        "Mastery Dishes"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "quest_completion",
+      "label": "Quest Completion",
+      "sinks": [],
+      "sources": [
+        "Mastery Dishes"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "progression_towards_advanced_crafting",
+      "label": "Progression towards advanced craft",
+      "sinks": [],
+      "sources": [
+        "Basic Tools Items"
+      ],
+      "values": [],
+      "kind": "final_good"
+    },
+    {
+      "id": "increased_gathering_crafting_efficiency",
+      "label": "Increased gathering & Crafting efficiency",
+      "sinks": [],
+      "sources": [
+        "Advanced Tools Furniture Equipment"
+      ],
+      "values": [],
+      "kind": "final_good"
+    }
+  ]
+}

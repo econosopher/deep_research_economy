@@ -206,7 +206,7 @@ class SecureConfig:
         """Export a template configuration file for sharing."""
         template = {
             "DEFAULT_PROVIDER": self.get_config("DEFAULT_PROVIDER", "claude"),
-            "REPO_PATH": self.get_config("REPO_PATH", "/path/to/economy-flow-plugin"),
+            "REPO_PATH": self.get_config("REPO_PATH", "/path/to/economy_flow_plugin"),
             "_comment": "API keys should be set using 'economy_json_builder --setup' command"
         }
         

@@ -7,6 +7,7 @@ from typing import Dict, Any, List
 import anthropic
 from anthropic import Anthropic
 from .base_provider import BaseEconomyProvider
+from .prompts import final_json_instructions_prompt
 
 
 class ClaudeProvider(BaseEconomyProvider):
@@ -222,7 +223,7 @@ Structure this information clearly for conversion to the JSON format."""
 
 {structured_analysis}
 
-{self.get_economy_prompt("", game_title)}"""
+{final_json_instructions_prompt(game_title)}"""
 
             response = self.client.messages.create(
                 model=self.model,
