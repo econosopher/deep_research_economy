@@ -1,0 +1,3 @@
+# Clash Royale
+
+Clash Royale is a real-time strategy mobile game developed and published by Supercell. It combines elements from collectible card games, tower defense, and multiplayer online battle arena. Players collect and upgrade cards featuring Clash of Clans troops, spells, and defenses, then duel other players in real-time battles. The game features a trophy-based progression system, various game modes, and a strong emphasis on competitive play with regular tournaments and esports events.

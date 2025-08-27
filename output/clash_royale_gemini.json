@@ -1,0 +1,114 @@
+{
+  "edges": [
+    [
+      "to_collect_cards",
+      "to_upgrade_cards"
+    ],
+    [
+      "to_upgrade_cards",
+      "to_build_decks"
+    ],
+    [
+      "to_build_decks",
+      "to_battle_other_players"
+    ],
+    [
+      "to_battle_other_players",
+      "to_earn_rewards"
+    ],
+    [
+      "to_earn_rewards",
+      "to_collect_cards"
+    ]
+  ],
+  "inputs": [],
+  "nodes": [
+    {
+      "id": "to_collect_cards",
+      "label": "To Collect Cards",
+      "sinks": [],
+      "sources": [
+        "Chests",
+        "Shop Offers",
+        "Challenges",
+        "Season Pass Rewards",
+        "Trophy Road Rewards",
+        "Event Rewards"
+      ],
+      "values": [
+        "Collection Completion"
+      ]
+    },
+    {
+      "id": "to_upgrade_cards",
+      "label": "To Upgrade Cards",
+      "sinks": [
+        "Gold",
+        "Cards"
+      ],
+      "sources": [],
+      "values": []
+    },
+    {
+      "id": "to_build_decks",
+      "label": "To Build Decks",
+      "sinks": [],
+      "sources": [
+        "Cards"
+      ],
+      "values": []
+    },
+    {
+      "id": "to_battle_other_players",
+      "label": "To Battle Other Players",
+      "sinks": [
+        "Elixir"
+      ],
+      "sources": [],
+      "values": [
+        "Trophies",
+        "Strategic Mastery",
+        "Competitive Success"
+      ]
+    },
+    {
+      "id": "to_earn_rewards",
+      "label": "To Earn Rewards",
+      "sinks": [],
+      "sources": [
+        "Gold",
+        "Gems",
+        "Cards",
+        "Season Tokens",
+        "Trade Tokens",
+        "Wild Shards",
+        "Evolution Shards"
+      ],
+      "values": []
+    }
+  ],
+  "subsections": [
+    {
+      "id": "core_loop",
+      "label": "Core Loop",
+      "nodeIds": [
+        "to_collect_cards",
+        "to_upgrade_cards",
+        "to_build_decks",
+        "to_battle_other_players",
+        "to_earn_rewards"
+      ]
+    },
+    {
+      "id": "activities",
+      "label": "Activities",
+      "nodeIds": [
+        "to_collect_cards",
+        "to_upgrade_cards",
+        "to_build_decks",
+        "to_battle_other_players",
+        "to_earn_rewards"
+      ]
+    }
+  ]
+}

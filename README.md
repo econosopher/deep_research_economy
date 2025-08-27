@@ -57,8 +57,8 @@ python3 economy_json_builder.py generate --provider gemini inputs/rainbow_six_si
 # Specify output filename
 python3 economy_json_builder.py generate --output-name custom_name.json inputs/game_info.md "Game Title"
 
-# Use a specific Gemini model (defaults to gemini-2.5-pro)
-python3 economy_json_builder.py generate --provider gemini --model gemini-2.5-flash inputs/game_info.md "Game Title"
+# Use a specific Gemini model (defaults to gemini-2.0-flash-exp)
+python3 economy_json_builder.py generate --provider gemini --model gemini-1.5-pro inputs/game_info.md "Game Title"
 
 # Skip creating a pull request
 python3 economy_json_builder.py generate --no-pr inputs/game_info.md "Game Title"
@@ -222,8 +222,9 @@ curl http://localhost:5001/health
 - Excels at understanding complex game systems
 
 ### Gemini Provider
-- Supports multiple models (2.5 Pro default, 2.5 Flash, 2.0 Flash, 1.5 Pro, 1.5 Flash)
-- Optimized 2-phase deep research process (leveraging Gemini 2.5's enhanced reasoning)
+- Supports multiple models (2.0 Flash Exp default, 1.5 Pro, 1.5 Flash)
+- Note: Gemini 2.5 Pro temporarily experiencing safety filter issues
+- Optimized 2-phase deep research process
 - Comprehensive analysis in Phase 1, direct JSON generation in Phase 2
 - Better structured output with native JSON mode
 

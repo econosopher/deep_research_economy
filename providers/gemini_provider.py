@@ -25,13 +25,14 @@ from .prompts import (
 class GeminiProvider(BaseEconomyProvider):
     """Gemini-based economy flow provider with deep research."""
     
-    def __init__(self, api_key: str, model_name: str = 'gemini-2.5-pro', depth: int = 0, required_categories: Optional[List[str]] = None):
+    def __init__(self, api_key: str, model_name: str = 'gemini-2.0-flash-exp', depth: int = 0, required_categories: Optional[List[str]] = None):
         """Initialize Gemini provider with configurable model.
         
         Args:
             api_key: Google API key
-            model_name: Gemini model to use (default: gemini-2.5-pro)
-                       Options: gemini-2.5-pro (stable), gemini-2.5-flash, gemini-1.5-pro, gemini-1.5-flash
+            model_name: Gemini model to use (default: gemini-2.0-flash-exp)
+                       Options: gemini-2.0-flash-exp (stable), gemini-2.5-flash, gemini-1.5-pro, gemini-1.5-flash
+                       Note: gemini-2.5-pro temporarily disabled due to safety blocking issues
         """
         super().__init__(api_key)
         genai.configure(api_key=api_key)
@@ -136,8 +137,24 @@ Provide a thorough, structured analysis that captures all economic relationships
                 if hasattr(response, 'candidates') and response.candidates:
                     candidate = response.candidates[0]
                     if hasattr(candidate, 'finish_reason'):
-                        error_msg += f" (finish_reason: {candidate.finish_reason})"
+                        finish_reason = candidate.finish_reason
+                        # Map finish_reason values to meaningful messages
+                        if finish_reason == 1:
+                            error_msg += " (SAFETY: Content was blocked due to safety filters)"
+                        elif finish_reason == 2:
+                            error_msg += " (MAX_TOKENS: Response exceeded token limit)"
+                        elif finish_reason == 3:
+                            error_msg += " (RECITATION: Response blocked due to recitation)"
+                        elif finish_reason == 4:
+                            error_msg += " (OTHER: Response blocked for other reasons)"
+                        else:
+                            error_msg += f" (finish_reason: {finish_reason})"
                 print(f"ERROR: {error_msg}")
+                
+                # Suggest alternative for 2.5-pro blocking
+                if self.model_name == 'gemini-2.5-pro' and finish_reason == 1:
+                    print("TIP: Try using --model gemini-2.0-flash-exp or gemini-1.5-pro instead")
+                    
                 raise ValueError(error_msg)
             
             return response.text

@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Test to understand finish_reason values"""
 
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 import google.generativeai as genai
 from providers.secure_config import SecureConfig
 
