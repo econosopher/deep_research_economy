@@ -145,7 +145,7 @@ Example output structure:
 ## Architecture
 
 ```
-economy_json_providers/
+deep_research_economy/
 ├── economy_json_builder.py     # Main entry point
 ├── api_server.py              # Flask REST API server
 ├── providers/                  # AI provider implementations
@@ -155,9 +155,20 @@ economy_json_providers/
 │   ├── prompts.py            # Centralized prompt templates
 │   ├── config.py             # Configuration management
 │   └── secure_config.py      # Secure API key storage
-├── output/                    # Generated JSON files
-├── test_economy_json.py      # Core test suite
-└── test_api.py               # API endpoint tests
+├── agents.readme/             # Agent-specific documentation
+│   ├── api_server.md         # API server instructions
+│   ├── economy_json.md       # Economy JSON guidelines
+│   ├── prompts.md           # Prompt engineering docs
+│   ├── providers.md         # Provider implementation docs
+│   └── testing.md           # Testing guidelines
+├── tests/                     # Test suite
+│   ├── debug/               # Debug and inspection scripts
+│   ├── test_api.py         # API endpoint tests
+│   └── test_builder.py     # Builder tests
+├── tools/                     # Utility scripts
+│   └── batch_generate_validate.py
+├── inputs/                    # Example input files
+└── output/                    # Generated JSON files
 ```
 
 ## Flask REST API Integration
@@ -191,7 +202,7 @@ The Flask API enables the Figma Economy Flow Plugin to:
 3. Validate JSON structures before visualization
 4. Manage research sessions across requests
 
-For detailed architecture documentation, see [FLASK_ARCHITECTURE.md](./FLASK_ARCHITECTURE.md).
+For detailed implementation documentation, see the relevant files in the [agents.readme](./agents.readme/) directory.
 
 ### Testing the API
 
@@ -234,7 +245,14 @@ curl http://localhost:5001/health
 ### Running Tests
 
 ```bash
-python3 test_economy_json.py
+# Run API tests
+python3 tests/test_api.py
+
+# Run builder tests
+python3 tests/test_builder.py
+
+# Run debug/inspection scripts
+python3 tests/debug/test_gemini_models.py
 ```
 
 ## Contributing
