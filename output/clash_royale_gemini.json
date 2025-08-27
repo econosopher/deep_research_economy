@@ -1,114 +1,518 @@
 {
-  "edges": [
-    [
-      "to_collect_cards",
-      "to_upgrade_cards"
-    ],
-    [
-      "to_upgrade_cards",
-      "to_build_decks"
-    ],
-    [
-      "to_build_decks",
-      "to_battle_other_players"
-    ],
-    [
-      "to_battle_other_players",
-      "to_earn_rewards"
-    ],
-    [
-      "to_earn_rewards",
-      "to_collect_cards"
-    ]
+  "inputs": [
+    {
+      "id": "time",
+      "label": "Time",
+      "kind": "initial_sink_node"
+    },
+    {
+      "id": "money",
+      "label": "Money",
+      "kind": "initial_sink_node"
+    }
   ],
-  "inputs": [],
   "nodes": [
     {
-      "id": "to_collect_cards",
-      "label": "To Collect Cards",
-      "sinks": [],
+      "id": "to_battle_pvp",
+      "label": "To Battle PvP",
       "sources": [
-        "Chests",
-        "Shop Offers",
-        "Challenges",
-        "Season Pass Rewards",
-        "Trophy Road Rewards",
-        "Event Rewards"
+        "Gold",
+        "Chests"
       ],
+      "sinks": [],
       "values": [
-        "Collection Completion"
+        "Trophies",
+        "Arena/League Progress",
+        "Path Of Legends Rank",
+        "Mastery Progress",
+        "Competitive Gameplay",
+        "Sense of Achievement"
       ]
+    },
+    {
+      "id": "to_open_chests",
+      "label": "To Open Chests",
+      "sources": [
+        "Gold",
+        "Gems",
+        "Cards (specific)",
+        "Wild Cards",
+        "Elite Wild Cards",
+        "Magic Items",
+        "Keys"
+      ],
+      "sinks": [
+        "Chests",
+        "Gems",
+        "Keys"
+      ],
+      "values": []
     },
     {
       "id": "to_upgrade_cards",
       "label": "To Upgrade Cards",
+      "sources": [
+        "Star Points"
+      ],
       "sinks": [
         "Gold",
-        "Cards"
+        "Cards (specific)",
+        "Wild Cards",
+        "Elite Wild Cards"
       ],
-      "sources": [],
-      "values": []
-    },
-    {
-      "id": "to_build_decks",
-      "label": "To Build Decks",
-      "sinks": [],
-      "sources": [
-        "Cards"
-      ],
-      "values": []
-    },
-    {
-      "id": "to_battle_other_players",
-      "label": "To Battle Other Players",
-      "sinks": [
-        "Elixir"
-      ],
-      "sources": [],
       "values": [
-        "Trophies",
-        "Strategic Mastery",
-        "Competitive Success"
+        "King Level",
+        "Card Level",
+        "Tower Power",
+        "Collection Progress",
+        "Collection & Customization",
+        "Strategic deckbuild"
       ]
     },
     {
-      "id": "to_earn_rewards",
-      "label": "To Earn Rewards",
-      "sinks": [],
+      "id": "to_buy_shop_items",
+      "label": "To Buy Shop Items",
+      "sources": [
+        "Cards (specific)",
+        "Wild Cards",
+        "Elite Wild Cards",
+        "Chests",
+        "Magic Items",
+        "Emotes",
+        "Tower Skins",
+        "Banners",
+        "Banner Tokens",
+        "Keys"
+      ],
+      "sinks": [
+        "Gold",
+        "Gems",
+        "Emotes",
+        "Tower Skins",
+        "Banners"
+      ],
+      "values": [
+        "Collection Progress",
+        "Collection & Customization"
+      ]
+    },
+    {
+      "id": "to_participate_in_challenges",
+      "label": "To Participate in Challenges",
       "sources": [
         "Gold",
         "Gems",
-        "Cards",
-        "Season Tokens",
-        "Trade Tokens",
-        "Wild Shards",
-        "Evolution Shards"
+        "Cards (specific)",
+        "Wild Cards",
+        "Elite Wild Cards",
+        "Magic Items",
+        "Emotes",
+        "Tower Skins",
+        "Banners",
+        "Banner Tokens"
       ],
-      "values": []
-    }
-  ],
-  "subsections": [
-    {
-      "id": "core_loop",
-      "label": "Core Loop",
-      "nodeIds": [
-        "to_collect_cards",
-        "to_upgrade_cards",
-        "to_build_decks",
-        "to_battle_other_players",
-        "to_earn_rewards"
+      "sinks": [
+        "Gems"
+      ],
+      "values": [
+        "Competitive Gameplay",
+        "Sense of Achievement"
       ]
     },
     {
-      "id": "activities",
-      "label": "Activities",
-      "nodeIds": [
-        "to_collect_cards",
-        "to_upgrade_cards",
-        "to_build_decks",
-        "to_battle_other_players",
-        "to_earn_rewards"
+      "id": "to_complete_daily_quests",
+      "label": "To Complete Daily Quests",
+      "sources": [
+        "Gold",
+        "Gems",
+        "Chests"
+      ],
+      "sinks": [],
+      "values": []
+    },
+    {
+      "id": "to_donate_cards",
+      "label": "To Donate Cards",
+      "sources": [
+        "Gold"
+      ],
+      "sinks": [
+        "Cards (specific)"
+      ],
+      "values": [
+        "King Level",
+        "Clan XP",
+        "Social Interaction"
       ]
+    },
+    {
+      "id": "to_request_cards",
+      "label": "To Request Cards",
+      "sources": [
+        "Cards (specific)"
+      ],
+      "sinks": [],
+      "values": [
+        "Social Interaction"
+      ]
+    },
+    {
+      "id": "to_use_magic_items",
+      "label": "To Use Magic Items",
+      "sources": [],
+      "sinks": [
+        "Magic Items"
+      ],
+      "values": []
+    },
+    {
+      "id": "to_progress_on_trophy_road",
+      "label": "To Progress on Trophy Road",
+      "sources": [
+        "Gold",
+        "Gems",
+        "Cards (specific)",
+        "Wild Cards",
+        "Magic Items",
+        "Emotes",
+        "Tower Skins",
+        "Banners",
+        "Banner Tokens",
+        "Chests"
+      ],
+      "sinks": [],
+      "values": [
+        "Sense of Achievement"
+      ]
+    },
+    {
+      "id": "to_progress_on_path_of_legends",
+      "label": "To Progress on Path of Legends",
+      "sources": [
+        "Gold",
+        "Gems",
+        "Cards (specific)",
+        "Wild Cards",
+        "Elite Wild Cards",
+        "Magic Items",
+        "Emotes",
+        "Tower Skins",
+        "Banners",
+        "Banner Tokens",
+        "Chests"
+      ],
+      "sinks": [],
+      "values": [
+        "Path Of Legends Rank",
+        "Competitive Gameplay",
+        "Sense of Achievement"
+      ]
+    },
+    {
+      "id": "to_claim_pass_royale_rewards",
+      "label": "To Claim Pass Royale Rewards",
+      "sources": [
+        "Gold",
+        "Gems",
+        "Cards (specific)",
+        "Wild Cards",
+        "Elite Wild Cards",
+        "Magic Items",
+        "Emotes",
+        "Tower Skins",
+        "Banners",
+        "Banner Tokens",
+        "Keys",
+        "Chests"
+      ],
+      "sinks": [
+        "Pass Royale (item)"
+      ],
+      "values": [
+        "Collection & Customization"
+      ]
+    },
+    {
+      "id": "to_unlock_card_masteries",
+      "label": "To Unlock Card Masteries",
+      "sources": [
+        "Gold",
+        "Gems",
+        "Magic Items"
+      ],
+      "sinks": [],
+      "values": [
+        "Mastery Progress",
+        "Sense of Achievement"
+      ]
+    },
+    {
+      "id": "to_craft_banners",
+      "label": "To Craft Banners",
+      "sources": [
+        "Banners"
+      ],
+      "sinks": [
+        "Star Points",
+        "Banner Tokens"
+      ],
+      "values": [
+        "Collection & Customization"
+      ]
+    },
+    {
+      "id": "to_trade_cards",
+      "label": "To Trade Cards",
+      "sources": [],
+      "sinks": [
+        "Gold",
+        "Cards (specific)"
+      ],
+      "values": [
+        "Social Interaction"
+      ]
+    },
+    {
+      "id": "to_join_clan_wars",
+      "label": "To Join Clan Wars",
+      "sources": [],
+      "sinks": [],
+      "values": [
+        "Clan XP",
+        "Clan Score",
+        "Competitive Gameplay",
+        "Social Interaction"
+      ]
+    },
+    {
+      "id": "direct_purchase",
+      "label": "To Direct Purchase (Monetization)",
+      "sources": [
+        "Gems",
+        "Pass Royale (item)"
+      ],
+      "sinks": [],
+      "values": []
+    }
+  ],
+  "edges": [
+    [
+      "time",
+      "to_battle_pvp"
+    ],
+    [
+      "time",
+      "to_open_chests"
+    ],
+    [
+      "time",
+      "to_participate_in_challenges"
+    ],
+    [
+      "time",
+      "to_complete_daily_quests"
+    ],
+    [
+      "time",
+      "to_donate_cards"
+    ],
+    [
+      "time",
+      "to_request_cards"
+    ],
+    [
+      "time",
+      "to_progress_on_trophy_road"
+    ],
+    [
+      "time",
+      "to_progress_on_path_of_legends"
+    ],
+    [
+      "time",
+      "to_claim_pass_royale_rewards"
+    ],
+    [
+      "time",
+      "to_unlock_card_masteries"
+    ],
+    [
+      "time",
+      "to_craft_banners"
+    ],
+    [
+      "time",
+      "to_trade_cards"
+    ],
+    [
+      "time",
+      "to_join_clan_wars"
+    ],
+    [
+      "time",
+      "to_use_magic_items"
+    ],
+    [
+      "money",
+      "direct_purchase"
+    ],
+    [
+      "to_battle_pvp",
+      "to_open_chests"
+    ],
+    [
+      "to_battle_pvp",
+      "to_unlock_card_masteries"
+    ],
+    [
+      "to_battle_pvp",
+      "to_progress_on_trophy_road"
+    ],
+    [
+      "to_battle_pvp",
+      "to_progress_on_path_of_legends"
+    ],
+    [
+      "to_open_chests",
+      "to_upgrade_cards"
+    ],
+    [
+      "to_upgrade_cards",
+      "to_battle_pvp"
+    ],
+    [
+      "to_buy_shop_items",
+      "to_upgrade_cards"
+    ],
+    [
+      "to_buy_shop_items",
+      "to_craft_banners"
+    ],
+    [
+      "to_participate_in_challenges",
+      "to_upgrade_cards"
+    ],
+    [
+      "to_participate_in_challenges",
+      "to_battle_pvp"
+    ],
+    [
+      "to_complete_daily_quests",
+      "to_upgrade_cards"
+    ],
+    [
+      "to_complete_daily_quests",
+      "to_open_chests"
+    ],
+    [
+      "to_donate_cards",
+      "to_request_cards"
+    ],
+    [
+      "to_request_cards",
+      "to_upgrade_cards"
+    ],
+    [
+      "to_use_magic_items",
+      "to_upgrade_cards"
+    ],
+    [
+      "to_progress_on_trophy_road",
+      "to_upgrade_cards"
+    ],
+    [
+      "to_progress_on_trophy_road",
+      "to_open_chests"
+    ],
+    [
+      "to_progress_on_path_of_legends",
+      "to_upgrade_cards"
+    ],
+    [
+      "to_claim_pass_royale_rewards",
+      "to_upgrade_cards"
+    ],
+    [
+      "to_claim_pass_royale_rewards",
+      "to_open_chests"
+    ],
+    [
+      "to_unlock_card_masteries",
+      "to_upgrade_cards"
+    ],
+    [
+      "to_trade_cards",
+      "to_upgrade_cards"
+    ],
+    [
+      "to_join_clan_wars",
+      "to_battle_pvp"
+    ],
+    [
+      "direct_purchase",
+      "to_buy_shop_items"
+    ],
+    [
+      "direct_purchase",
+      "to_claim_pass_royale_rewards"
+    ],
+    [
+      "direct_purchase",
+      "to_participate_in_challenges"
+    ]
+  ],
+  "subsections": [
+    {
+      "id": "core_gameplay_loop",
+      "label": "Core Gameplay Loop",
+      "nodeIds": [
+        "to_battle_pvp",
+        "to_open_chests",
+        "to_upgrade_cards"
+      ],
+      "color": "#FFD700"
+    },
+    {
+      "id": "progression_rewards",
+      "label": "Progression & Rewards",
+      "nodeIds": [
+        "to_progress_on_trophy_road",
+        "to_progress_on_path_of_legends",
+        "to_claim_pass_royale_rewards",
+        "to_unlock_card_masteries"
+      ],
+      "color": "#9ACD32"
+    },
+    {
+      "id": "social_clan",
+      "label": "Social & Clan",
+      "nodeIds": [
+        "to_donate_cards",
+        "to_request_cards",
+        "to_trade_cards",
+        "to_join_clan_wars"
+      ],
+      "color": "#87CEEB"
+    },
+    {
+      "id": "acquisition_customization",
+      "label": "Acquisition & Customization",
+      "nodeIds": [
+        "to_buy_shop_items",
+        "to_participate_in_challenges",
+        "to_complete_daily_quests",
+        "to_use_magic_items",
+        "to_craft_banners"
+      ],
+      "color": "#DA70D6"
+    },
+    {
+      "id": "monetization",
+      "label": "Monetization",
+      "nodeIds": [
+        "direct_purchase"
+      ],
+      "color": "#FF4500"
     }
   ]
 }

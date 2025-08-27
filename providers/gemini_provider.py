@@ -25,13 +25,13 @@ from .prompts import (
 class GeminiProvider(BaseEconomyProvider):
     """Gemini-based economy flow provider with deep research."""
     
-    def __init__(self, api_key: str, model_name: str = 'gemini-2.0-flash-exp', depth: int = 0, required_categories: Optional[List[str]] = None):
+    def __init__(self, api_key: str, model_name: str = 'gemini-2.5-flash', depth: int = 0, required_categories: Optional[List[str]] = None):
         """Initialize Gemini provider with configurable model.
         
         Args:
             api_key: Google API key
-            model_name: Gemini model to use (default: gemini-2.0-flash-exp)
-                       Options: gemini-2.0-flash-exp (stable), gemini-2.5-flash, gemini-1.5-pro, gemini-1.5-flash
+            model_name: Gemini model to use (default: gemini-2.5-flash)
+                       Options: gemini-2.5-flash (default), gemini-2.0-flash-exp, gemini-1.5-pro, gemini-1.5-flash
                        Note: gemini-2.5-pro temporarily disabled due to safety blocking issues
         """
         super().__init__(api_key)
