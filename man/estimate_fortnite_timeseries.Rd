@@ -9,7 +9,7 @@ estimate_fortnite_timeseries(
   end_date = Sys.Date() - 1,
   metrics = c("unique_players"),
   sample_size = 100,
-  confidence_level = getOption("fortniteR.confidence_level", 0.95),
+  confidence_level = getOption("FortniteR.confidence_level", 0.95),
   max_pages = 20,
   page_size = 100,
   overlap_adjustment = 1,
@@ -31,7 +31,7 @@ estimate_fortnite_timeseries(
 \item{sample_size}{Number of islands to sample from the frame.}
 
 \item{confidence_level}{Confidence level for intervals. Defaults to
-`getOption("fortniteR.confidence_level", 0.95)`.}
+`getOption("FortniteR.confidence_level", 0.95)`.}
 
 \item{max_pages}{Maximum number of pages to pull for the sampling frame.}
 

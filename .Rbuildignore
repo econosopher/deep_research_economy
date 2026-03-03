@@ -6,4 +6,4 @@
 ^tests/testthat/fixtures$
 ^\.github$
 ^LICENSE\.md$
-^\.claude$
+^\.claude$^\.agent$

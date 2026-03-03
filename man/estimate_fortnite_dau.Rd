@@ -7,7 +7,7 @@
 estimate_fortnite_dau(
   date = Sys.Date() - 1,
   sample_size = 100,
-  confidence_level = getOption("fortniteR.confidence_level", 0.95),
+  confidence_level = getOption("FortniteR.confidence_level", 0.95),
   max_pages = 20,
   page_size = 100,
   overlap_adjustment = 1,
@@ -22,7 +22,7 @@ estimate_fortnite_dau(
 \item{sample_size}{Number of islands to sample from the frame.}
 
 \item{confidence_level}{Confidence level for the interval (e.g., 0.9, 0.95, 0.99).
-Defaults to `getOption("fortniteR.confidence_level", 0.95)`.}
+Defaults to `getOption("FortniteR.confidence_level", 0.95)`.}
 
 \item{max_pages}{Maximum number of pages to pull for the sampling frame.}
 
@@ -61,7 +61,7 @@ converting to a platform-level DAU estimate.
 est <- estimate_fortnite_dau(
   date = Sys.Date() - 1,
   sample_size = 100,
-  confidence_level = getOption("fortniteR.confidence_level", 0.95),
+  confidence_level = getOption("FortniteR.confidence_level", 0.95),
   overlap_adjustment = 1.4,
   seed = 42
 )
