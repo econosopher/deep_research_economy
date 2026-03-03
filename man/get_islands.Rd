@@ -4,16 +4,27 @@
 \alias{get_islands}
 \title{Get list of Fortnite Creative islands}
 \usage{
-get_islands(limit = 50, offset = 0, order_by = "plays", order = "desc")
+get_islands(
+  limit = 50,
+  offset = 0,
+  order_by = "plays",
+  order = "desc",
+  after = NULL,
+  before = NULL
+)
 }
 \arguments{
-\item{limit}{Maximum number of results (default: 50)}
+\item{limit}{Maximum number of results (default: 50, max: 1000)}
 
-\item{offset}{Number of results to skip}
+\item{offset}{Deprecated and ignored. Kept for backward compatibility.}
 
-\item{order_by}{Field to order by ("plays", "lastPlayed", etc.)}
+\item{order_by}{Deprecated and ignored. Kept for backward compatibility.}
 
-\item{order}{Sort order ("asc" or "desc")}
+\item{order}{Deprecated and ignored. Kept for backward compatibility.}
+
+\item{after}{Cursor for fetching results after a given island.}
+
+\item{before}{Cursor for fetching results before a given island.}
 }
 \value{
 A tibble with island data
@@ -33,5 +44,6 @@ mock_response <- list(
 
 \dontrun{
 islands <- get_islands(limit = 50)
+islands_page_2 <- get_islands(limit = 50, after = "cursor_value")
 }
 }

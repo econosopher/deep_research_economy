@@ -44,6 +44,32 @@ metrics <- get_island_metrics(
   end_date = Sys.Date(),
   interval = "day"  # Options: "minute", "hour", "day"
 )
+
+# Estimate Fortnite DAU from a random island sample
+dau_estimate <- estimate_fortnite_dau(
+  date = Sys.Date() - 1,
+  sample_size = 150,
+  confidence_level = 0.95,  # tune confidence up/down
+  overlap_adjustment = 1.4, # optional de-dup assumption across islands
+  seed = 42
+)
+
+dau_estimate$summary
+
+# Estimate a multi-metric daily time series (up to last 7 days)
+# This reuses one sampled island set and makes one metrics request per island,
+# which is much lighter than re-sampling per day.
+ts_estimate <- estimate_fortnite_timeseries(
+  start_date = Sys.Date() - 6,
+  end_date = Sys.Date() - 1,
+  metrics = c("unique_players", "plays", "peak_ccu"),
+  sample_size = 150,
+  confidence_level = getOption("fortniteR.confidence_level", 0.95),
+  overlap_adjustment = 1.4,
+  seed = 42
+)
+
+ts_estimate$summary
 ```
 
 ### Creating Visualizations
@@ -70,6 +96,8 @@ Here's an example of a GT table generated using real data from the Fortnite Ecos
 - Fetch island listings with pagination
 - Get detailed island metadata
 - Retrieve engagement metrics (players, plays, retention, etc.)
+- Estimate DAU with confidence intervals from random island sampling
+- Estimate multi-metric time series from one sampled island frame (7-day API window)
 - Support for different time intervals (day, hour, minute)
 - Create beautiful GT tables with metrics
 - No authentication required
@@ -78,7 +106,7 @@ Here's an example of a GT table generated using real data from the Fortnite Ecos
 
 - `/islands` - Returns basic island metadata (code, name, creator, platform, tags)
 - `/islands/{code}` - Returns detailed metadata for a specific island
-- `/islands/{code}/metrics` - Returns engagement metrics (plays, retention, etc.)
+- `/islands/{code}/metrics/{interval}` - Returns engagement metrics at day/hour/minute intervals
 
 ## API Limitations
 

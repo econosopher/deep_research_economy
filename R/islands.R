@@ -1,9 +1,11 @@
 #' Get list of Fortnite Creative islands
 #'
-#' @param limit Maximum number of results (default: 50)
-#' @param offset Number of results to skip
-#' @param order_by Field to order by ("plays", "lastPlayed", etc.)
-#' @param order Sort order ("asc" or "desc")
+#' @param limit Maximum number of results (default: 50, max: 1000)
+#' @param offset Deprecated and ignored. Kept for backward compatibility.
+#' @param order_by Deprecated and ignored. Kept for backward compatibility.
+#' @param order Deprecated and ignored. Kept for backward compatibility.
+#' @param after Cursor for fetching results after a given island.
+#' @param before Cursor for fetching results before a given island.
 #'
 #' @return A tibble with island data
 #' @export
@@ -20,18 +22,45 @@
 #' 
 #' \dontrun{
 #' islands <- get_islands(limit = 50)
+#' islands_page_2 <- get_islands(limit = 50, after = "cursor_value")
 #' }
-get_islands <- function(limit = 50, offset = 0, order_by = "plays", order = "desc") {
+get_islands <- function(
+  limit = 50,
+  offset = 0,
+  order_by = "plays",
+  order = "desc",
+  after = NULL,
+  before = NULL
+) {
+  # Validate and map to API parameter names.
+  if (!is.numeric(limit) || length(limit) != 1 || is.na(limit)) {
+    stop("`limit` must be a single numeric value.", call. = FALSE)
+  }
+  size <- as.integer(limit)
+  if (size < 1 || size > 1000) {
+    stop("`limit` must be between 1 and 1000.", call. = FALSE)
+  }
+
+  if (!is.null(after) && !is.null(before)) {
+    stop("Use only one of `after` or `before` in a single request.", call. = FALSE)
+  }
+
+  if (!identical(offset, 0)) {
+    warning("`offset` is no longer supported by the API and will be ignored.", call. = FALSE)
+  }
+  if (!identical(order_by, "plays") || !identical(order, "desc")) {
+    warning("`order_by` and `order` are no longer supported by the API and will be ignored.", call. = FALSE)
+  }
+
   # Create request
   req <- fortnite_request("islands")
   
   # Add query parameters
   resp <- req |>
     httr2::req_url_query(
-      limit = limit,
-      offset = offset,
-      orderBy = order_by,
-      order = order
+      size = size,
+      after = after,
+      before = before
     ) |>
     httr2::req_perform() |>
     httr2::resp_body_json()
@@ -116,23 +145,18 @@ get_island_metadata <- function(code) {
 #' )
 #' }
 get_island_metrics <- function(code, start_date, end_date, interval = "day") {
-  # Convert dates to ISO 8601 format
-  if (inherits(start_date, "Date")) {
-    start_date <- format(start_date, "%Y-%m-%dT00:00:00Z")
-  }
-  if (inherits(end_date, "Date")) {
-    end_date <- format(end_date, "%Y-%m-%dT23:59:59Z")
-  }
+  interval <- match.arg(interval, c("day", "hour", "minute"))
+  from <- normalize_api_datetime(start_date, boundary = "start")
+  to <- normalize_api_datetime(end_date, boundary = "end")
   
   # Create request
-  req <- fortnite_request(paste0("islands/", code, "/metrics"))
+  req <- fortnite_request(paste0("islands/", code, "/metrics/", interval))
   
   # Add query parameters
   resp <- req |>
     httr2::req_url_query(
-      startDate = start_date,
-      endDate = end_date,
-      interval = interval
+      from = from,
+      to = to
     ) |>
     httr2::req_perform() |>
     httr2::resp_body_json()
@@ -142,14 +166,8 @@ get_island_metrics <- function(code, start_date, end_date, interval = "day") {
     return(tibble::tibble())
   }
   
-  # Extract timestamps from any metric array
-  timestamps <- if (!is.null(resp$plays)) {
-    purrr::map_chr(resp$plays, ~ .x$timestamp %||% NA_character_)
-  } else if (!is.null(resp$uniquePlayers)) {
-    purrr::map_chr(resp$uniquePlayers, ~ .x$timestamp %||% NA_character_)
-  } else {
-    character(0)
-  }
+  # Extract timestamps from the first available metric array.
+  timestamps <- extract_metric_timestamps(resp)
   
   if (length(timestamps) == 0) {
     return(tibble::tibble())
@@ -176,6 +194,16 @@ get_island_metrics <- function(code, start_date, end_date, interval = "day") {
       resp$averageMinutesPerPlayer, 
       ~ (.x$value %||% NA_real_) * 60
     )
+  }
+
+  # Add peak concurrent users
+  if (!is.null(resp$peakCCU)) {
+    metrics_data$peak_ccu <- purrr::map_dbl(resp$peakCCU, ~ .x$value %||% NA_real_)
+  }
+
+  # Add minutes played
+  if (!is.null(resp$minutesPlayed)) {
+    metrics_data$minutes_played <- purrr::map_dbl(resp$minutesPlayed, ~ .x$value %||% NA_real_)
   }
   
   # Add favorites
@@ -289,4 +317,54 @@ get_all_islands <- function(max_pages = 10, page_size = 100) {
 #' @noRd
 `%||%` <- function(x, y) {
   if (is.null(x)) y else x
+}
+
+#' Normalize date/time for API query parameters.
+#' @noRd
+normalize_api_datetime <- function(x, boundary = c("start", "end")) {
+  boundary <- match.arg(boundary)
+
+  if (inherits(x, "Date")) {
+    if (boundary == "start") {
+      return(sprintf("%sT00:00:00.000Z", format(x, "%Y-%m-%d")))
+    }
+
+    # API `to` is exclusive and must not be in the future.
+    today_utc <- as.Date(Sys.time(), tz = "UTC")
+    if (x >= today_utc) {
+      return(format(as.POSIXct(Sys.time(), tz = "UTC"), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"))
+    }
+
+    return(sprintf("%sT00:00:00.000Z", format(x + 1, "%Y-%m-%d")))
+  }
+
+  if (inherits(x, c("POSIXct", "POSIXt"))) {
+    return(format(as.POSIXct(x, tz = "UTC"), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"))
+  }
+
+  as.character(x)
+}
+
+#' Return timestamps from the first populated metric series.
+#' @noRd
+extract_metric_timestamps <- function(resp) {
+  metric_fields <- c(
+    "plays",
+    "uniquePlayers",
+    "averageMinutesPerPlayer",
+    "peakCCU",
+    "favorites",
+    "minutesPlayed",
+    "recommendations",
+    "retention"
+  )
+
+  for (field in metric_fields) {
+    values <- resp[[field]]
+    if (!is.null(values) && length(values) > 0) {
+      return(purrr::map_chr(values, ~ .x$timestamp %||% NA_character_))
+    }
+  }
+
+  character(0)
 }
