@@ -10,7 +10,7 @@ if (!requireNamespace("rcmdcheck", quietly = TRUE)) {
 
 library(rhub)
 
-message("=== Running CRAN checks for fortniteR ===\n")
+message("=== Running CRAN checks for FortniteR ===\n")
 
 # First, let's see available platforms
 message("Available rhub platforms:")

@@ -13,7 +13,7 @@
 #' @param date Date to estimate DAU for. Defaults to yesterday.
 #' @param sample_size Number of islands to sample from the frame.
 #' @param confidence_level Confidence level for the interval (e.g., 0.9, 0.95, 0.99).
-#'   Defaults to `getOption("fortniteR.confidence_level", 0.95)`.
+#'   Defaults to `getOption("FortniteR.confidence_level", 0.95)`.
 #' @param max_pages Maximum number of pages to pull for the sampling frame.
 #' @param page_size Number of islands per page for the sampling frame.
 #' @param overlap_adjustment Divide the island-level estimate by this value to
@@ -34,7 +34,7 @@
 #' est <- estimate_fortnite_dau(
 #'   date = Sys.Date() - 1,
 #'   sample_size = 100,
-#'   confidence_level = getOption("fortniteR.confidence_level", 0.95),
+#'   confidence_level = getOption("FortniteR.confidence_level", 0.95),
 #'   overlap_adjustment = 1.4,
 #'   seed = 42
 #' )
@@ -44,7 +44,7 @@
 estimate_fortnite_dau <- function(
   date = Sys.Date() - 1,
   sample_size = 100,
-  confidence_level = getOption("fortniteR.confidence_level", 0.95),
+  confidence_level = getOption("FortniteR.confidence_level", 0.95),
   max_pages = 20,
   page_size = 100,
   overlap_adjustment = 1,
@@ -199,7 +199,7 @@ estimate_fortnite_dau <- function(
 #'   `"retention_1_day"`, `"retention_7_days"`.
 #' @param sample_size Number of islands to sample from the frame.
 #' @param confidence_level Confidence level for intervals. Defaults to
-#'   `getOption("fortniteR.confidence_level", 0.95)`.
+#'   `getOption("FortniteR.confidence_level", 0.95)`.
 #' @param max_pages Maximum number of pages to pull for the sampling frame.
 #' @param page_size Number of islands per page for the sampling frame.
 #' @param overlap_adjustment Divide total estimates by this value to produce
@@ -234,7 +234,7 @@ estimate_fortnite_timeseries <- function(
   end_date = Sys.Date() - 1,
   metrics = c("unique_players"),
   sample_size = 100,
-  confidence_level = getOption("fortniteR.confidence_level", 0.95),
+  confidence_level = getOption("FortniteR.confidence_level", 0.95),
   max_pages = 20,
   page_size = 100,
   overlap_adjustment = 1,
@@ -501,7 +501,7 @@ estimate_fortnite_timeseries <- function(
 summarize_total_estimate <- function(
   sample_values,
   frame_size,
-  confidence_level = getOption("fortniteR.confidence_level", 0.95),
+  confidence_level = getOption("FortniteR.confidence_level", 0.95),
   adjustment = 1
 ) {
   observed <- sample_values[!is.na(sample_values)]
@@ -565,7 +565,7 @@ summarize_total_estimate <- function(
 summarize_sample_estimate <- function(
   sample_values,
   frame_size,
-  confidence_level = getOption("fortniteR.confidence_level", 0.95),
+  confidence_level = getOption("FortniteR.confidence_level", 0.95),
   overlap_adjustment = 1
 ) {
   out <- summarize_total_estimate(

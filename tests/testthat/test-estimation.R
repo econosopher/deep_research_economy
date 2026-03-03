@@ -1,7 +1,7 @@
 test_that("summarize_sample_estimate computes expected point estimate", {
   vals <- c(10, 20, 30, 40, 50)
 
-  out <- fortniteR:::summarize_sample_estimate(
+  out <- FortniteR:::summarize_sample_estimate(
     sample_values = vals,
     frame_size = 100,
     confidence_level = 0.95,
@@ -17,17 +17,17 @@ test_that("summarize_sample_estimate computes expected point estimate", {
 
 test_that("summarize_sample_estimate validates inputs", {
   expect_error(
-    fortniteR:::summarize_sample_estimate(c(1, 2), frame_size = 2, confidence_level = 1),
+    FortniteR:::summarize_sample_estimate(c(1, 2), frame_size = 2, confidence_level = 1),
     "confidence_level"
   )
 
   expect_error(
-    fortniteR:::summarize_sample_estimate(c(1, 2), frame_size = 2, overlap_adjustment = 0),
+    FortniteR:::summarize_sample_estimate(c(1, 2), frame_size = 2, overlap_adjustment = 0),
     "adjustment"
   )
 
   expect_error(
-    fortniteR:::summarize_sample_estimate(c(1), frame_size = 1),
+    FortniteR:::summarize_sample_estimate(c(1), frame_size = 1),
     "at least 2"
   )
 })
@@ -42,7 +42,7 @@ test_that("estimate_fortnite_dau rejects future dates before API calls", {
 test_that("summarize_total_estimate computes expected point estimate", {
   vals <- c(5, 15, 25, 35)
 
-  out <- fortniteR:::summarize_total_estimate(
+  out <- FortniteR:::summarize_total_estimate(
     sample_values = vals,
     frame_size = 10,
     confidence_level = 0.9,
@@ -56,10 +56,10 @@ test_that("summarize_total_estimate computes expected point estimate", {
 })
 
 test_that("confidence defaults can be controlled via option", {
-  old <- options(fortniteR.confidence_level = 0.9)
+  old <- options(FortniteR.confidence_level = 0.9)
   on.exit(options(old), add = TRUE)
 
-  out <- fortniteR:::summarize_total_estimate(
+  out <- FortniteR:::summarize_total_estimate(
     sample_values = c(1, 2, 3),
     frame_size = 3
   )

@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="package_logo.png" width="200" alt="fortniteR logo">
+  <img src="package_logo.png" width="200" alt="FortniteR logo">
 </p>
 
-# fortniteR
+# FortniteR
 
 R client for the Fortnite Ecosystem API, providing access to island metadata and engagement metrics.
 
@@ -10,11 +10,11 @@ R client for the Fortnite Ecosystem API, providing access to island metadata and
 
 ```r
 # Install from GitHub
-devtools::install_github("econosopher/fortniteR")
+devtools::install_github("econosopher/FortniteR")
 
 # Or using pacman
 if (!require(pacman)) install.packages("pacman")
-pacman::p_load_gh("econosopher/fortniteR")
+pacman::p_load_gh("econosopher/FortniteR")
 ```
 
 ## Usage
@@ -26,7 +26,7 @@ The Fortnite Ecosystem API is PUBLIC and does NOT require authentication. The AP
 ### Fetching Island Data
 
 ```r
-library(fortniteR)
+library(FortniteR)
 
 # Get list of islands
 islands <- get_islands(limit = 50)
@@ -64,7 +64,7 @@ ts_estimate <- estimate_fortnite_timeseries(
   end_date = Sys.Date() - 1,
   metrics = c("unique_players", "plays", "peak_ccu"),
   sample_size = 150,
-  confidence_level = getOption("fortniteR.confidence_level", 0.95),
+  confidence_level = getOption("FortniteR.confidence_level", 0.95),
   overlap_adjustment = 1.4,
   seed = 42
 )

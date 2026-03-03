@@ -4,7 +4,7 @@
 if (!require(pacman)) install.packages("pacman")
 pacman::p_load(devtools, dplyr, jsonlite)
 
-# Load the fortniteR package from current directory
+# Load the FortniteR package from current directory
 devtools::load_all(".")
 
 # Get one island

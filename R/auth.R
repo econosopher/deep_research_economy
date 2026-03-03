@@ -26,7 +26,7 @@ fortnite_request <- function(endpoint = "") {
   req <- req |>
     httr2::req_headers(
       "Accept" = "application/json",
-      "User-Agent" = "fortniteR/0.1.0"
+      "User-Agent" = "FortniteR/0.1.0"
     ) |>
     httr2::req_retry(max_tries = 3) |>
     httr2::req_timeout(30) |>
