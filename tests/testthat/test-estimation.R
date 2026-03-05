@@ -34,7 +34,7 @@ test_that("summarize_sample_estimate validates inputs", {
 
 test_that("estimate_fortnite_dau rejects future dates before API calls", {
   expect_error(
-    estimate_fortnite_dau(date = Sys.Date() + 1, quiet = TRUE),
+    estimate_fortnite_dau(date = Sys.Date() + 2, quiet = TRUE),
     "future"
   )
 })
