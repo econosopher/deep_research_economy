@@ -14,13 +14,14 @@ class BaseEconomyProvider(ABC):
         self.api_key = api_key
     
     @abstractmethod
-    def generate_economy_json(self, game_info: str, game_title: str) -> Dict[str, Any]:
+    def generate_economy_json(self, game_info: str, game_title: str, **kwargs) -> Dict[str, Any]:
         """
         Generate economy flow JSON based on game information.
         
         Args:
             game_info: Markdown content with game information
             game_title: Title of the game to research
+            **kwargs: Provider-specific generation options such as prompt/schema hints
             
         Returns:
             Dictionary containing the economy flow structure

@@ -12,6 +12,28 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from typing import Dict, Optional
 
+GEMINI_ENV_VARS = (
+    'GEMINI_DEEP_RESEARCH_API_KEY',
+    'GEMINI_API_KEY',
+    'GOOGLE_API_KEY',
+)
+ENV_FILES = (
+    Path('/Users/phillip/Documents/vibe_coding_projects/.env'),
+    Path('/Users/phillip/Documents/secrets/global.env'),
+    Path.home() / '.api_keys',
+)
+
+
+def _is_placeholder(value: Optional[str]) -> bool:
+    if not value:
+        return True
+    normalized = value.strip().lower()
+    return (
+        not normalized or
+        normalized.startswith('your_') or
+        'placeholder' in normalized
+    )
+
 
 class SecureConfig:
     """Secure configuration manager with encrypted API key storage."""
@@ -71,12 +93,21 @@ class SecureConfig:
         # First check environment variables
         env_mapping = {
             'claude': 'ANTHROPIC_API_KEY',
-            'gemini': 'GOOGLE_API_KEY',
+            'gemini': GEMINI_ENV_VARS,
             'openai': 'OPENAI_API_KEY'
         }
         
         env_var = env_mapping.get(provider.lower())
-        if env_var and env_var in os.environ:
+        if isinstance(env_var, tuple):
+            for candidate in env_var:
+                value = os.environ.get(candidate)
+                if not _is_placeholder(value):
+                    return value
+
+            file_value = self._load_api_key_from_env_files(env_var)
+            if file_value:
+                return file_value
+        elif env_var and env_var in os.environ and not _is_placeholder(os.environ[env_var]):
             return os.environ[env_var]
         
         # Check encrypted storage
@@ -91,6 +122,26 @@ class SecureConfig:
             print(f"\nNo API key found for {provider}.")
             return self.set_api_key(provider)
         
+        return None
+
+    def _load_api_key_from_env_files(self, env_vars: tuple[str, ...]) -> Optional[str]:
+        """Load an API key from shared env files without exposing secrets in logs."""
+        for env_file in ENV_FILES:
+            if not env_file.exists():
+                continue
+
+            for raw_line in env_file.read_text().splitlines():
+                line = raw_line.strip()
+                if not line or line.startswith('#') or '=' not in line:
+                    continue
+
+                key, value = line.split('=', 1)
+                key = key.strip()
+                value = value.strip().strip('"').strip("'")
+
+                if key in env_vars and not _is_placeholder(value):
+                    return value
+
         return None
     
     def set_api_key(self, provider: str, api_key: Optional[str] = None) -> Optional[str]:

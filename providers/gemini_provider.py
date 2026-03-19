@@ -184,12 +184,24 @@ Provide a thorough, structured analysis that captures all economic relationships
             print(f"Error synthesizing research: {e}")
             raise
     
-    def generate_economy_json(self, game_info: str, game_title: str) -> Dict[str, Any]:
+    def generate_economy_json(
+        self,
+        game_info: str,
+        game_title: str,
+        *,
+        conversion_prompt: Optional[str] = None,
+        response_json_schema: Optional[Dict[str, Any]] = None,
+        response_mime_type: str = "application/json",
+        research_brief: Optional[str] = None,
+        prompt_version: Optional[str] = None,
+        **kwargs,
+    ) -> Dict[str, Any]:
         """Generate economy flow JSON using 2-phase deep research optimized for Gemini 2.5."""
         try:
             # Phase 1: Comprehensive research (combines previous 3 phases)
             print(f"Gemini 2.5 Phase 1: Comprehensive analysis of {game_title}...")
-            comprehensive_analysis = self.comprehensive_research(game_info, game_title)
+            research_input = research_brief or game_info
+            comprehensive_analysis = self.comprehensive_research(research_input, game_title)
             
             # Optional classification stage for better structure
             print("Gemini 2.5 Phase 2a: Building classification table...")
@@ -211,7 +223,7 @@ Classification table (reference to guide JSON, not to output directly):
 Examples to emulate:
 {good_bad_examples()}
 
-{final_json_instructions_prompt(game_title)}
+{conversion_prompt or final_json_instructions_prompt(game_title)}
 
 IMPORTANT: Generate a complete, well-structured JSON that accurately represents all the economic relationships identified in the analysis above."""
 
@@ -220,7 +232,7 @@ IMPORTANT: Generate a complete, well-structured JSON that accurately represents 
                 gen_cfg = {
                     "temperature": 0,
                     "max_output_tokens": 16384,  # Increased for 2.5 models
-                    "response_mime_type": "application/json",
+                    "response_mime_type": response_mime_type,
                 }
             else:
                 gen_cfg = {
@@ -228,11 +240,13 @@ IMPORTANT: Generate a complete, well-structured JSON that accurately represents 
                     "top_p": 1.0,
                     "top_k": 1,
                     "max_output_tokens": 8192,
-                    "response_mime_type": "application/json",
+                    "response_mime_type": response_mime_type,
                 }
             # Attempt structured schema if the SDK supports it
             try:
-                gen_cfg["response_schema"] = economy_json_response_schema()
+                gen_cfg["response_schema"] = self._sanitize_response_schema(
+                    response_json_schema or economy_json_response_schema()
+                )
             except Exception:
                 pass
 
@@ -265,7 +279,8 @@ IMPORTANT: Generate a complete, well-structured JSON that accurately represents 
                 "model": self.model_name,
                 "deep_research": True,
                 "research_phases": 2,  # Optimized for Gemini 2.5
-                "game_title": game_title
+                "game_title": game_title,
+                "prompt_version": prompt_version or "legacy",
             }
             
             return economy_data
@@ -298,7 +313,9 @@ IMPORTANT: Generate a complete, well-structured JSON that accurately represents 
                     "response_mime_type": "application/json",
                 }
             try:
-                gen_cfg["response_schema"] = economy_json_response_schema()
+                gen_cfg["response_schema"] = self._sanitize_response_schema(
+                    economy_json_response_schema()
+                )
             except Exception:
                 pass
             response = self.model.generate_content(prompt, generation_config=gen_cfg)
@@ -322,13 +339,32 @@ IMPORTANT: Generate a complete, well-structured JSON that accurately represents 
     def validate_api_key(self) -> bool:
         """Validate that the API key works."""
         try:
-            # Try a simple request to validate the key
-            test_model = genai.GenerativeModel('gemini-1.5-flash')  # Use a basic model for testing
-            response = test_model.generate_content("Say 'OK'")
+            # Probe the configured model so validation matches the runtime path.
+            response = self.model.generate_content(
+                "Reply with OK",
+                generation_config={"temperature": 0, "max_output_tokens": 8}
+            )
             return True
         except Exception as e:
             print(f"API key validation failed: {e}")
             return False
+
+    def _sanitize_response_schema(self, schema: Dict[str, Any]) -> Dict[str, Any]:
+        """Drop invalid `required` entries that refer to undefined properties."""
+        if not isinstance(schema, dict):
+            return economy_json_response_schema()
+
+        sanitized = json.loads(json.dumps(schema))
+        properties = sanitized.get("properties")
+        required = sanitized.get("required")
+
+        if isinstance(properties, dict) and isinstance(required, list):
+            sanitized["required"] = [
+                key for key in required
+                if isinstance(key, str) and key in properties
+            ]
+
+        return sanitized
     
     @staticmethod
     def available_models():

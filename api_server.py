@@ -18,6 +18,7 @@ import traceback
 from economy_json_builder import EconomyJSONBuilder
 from providers import get_provider
 from providers.secure_config import SecureConfig
+from providers.prompts import economy_json_response_schema, final_json_instructions_prompt
 
 # Configure logging
 logging.basicConfig(
@@ -32,6 +33,112 @@ CORS(app, origins=['*'])  # Allow all origins for development
 
 # Store for ongoing research sessions (in production, use Redis/database)
 research_sessions = {}
+PROMPT_VERSION = '2.0'
+
+
+def build_research_brief(game_name: str, depth: int) -> str:
+    """Build a research brief aligned with the plugin's structured generation contract."""
+    lines = [
+        f'Research the game economy for "{game_name}".',
+        'Focus on concrete, player-facing systems and only include mechanics with strong evidence.',
+        'Capture spendable resources, consumed resources, non-spendable progression values, core activities, and final player outcomes.',
+    ]
+
+    if depth >= 1:
+        lines.append('Depth 1: map the core loop, main currencies/resources, and the primary progression path.')
+    if depth >= 2:
+        lines.append('Depth 2: add monetization, time gates, event systems, social/competitive loops, and important side systems.')
+    if depth >= 3:
+        lines.append('Depth 3: add end-game loops, optimization paths, collection/completion systems, and distinct playstyle differences.')
+
+    return '\n'.join(lines)
+
+
+def build_conversion_prompt(game_name: str) -> str:
+    """Build the JSON conversion prompt used when the client does not supply one."""
+    return final_json_instructions_prompt(game_name)
+
+
+def build_markdown_content(
+    game_name: str,
+    depth: int,
+    research_brief: Optional[str] = None,
+    conversion_prompt: Optional[str] = None,
+    response_json_schema: Optional[Dict[str, Any]] = None,
+) -> str:
+    """Create the markdown payload used by legacy provider flows."""
+    schema = response_json_schema or economy_json_response_schema()
+    return (
+        f"# {game_name} Economy Research\n\n"
+        f"## Research Brief\n{research_brief or build_research_brief(game_name, depth)}\n\n"
+        f"## Structured Conversion Prompt\n{conversion_prompt or build_conversion_prompt(game_name)}\n\n"
+        f"## Output JSON Schema\n```json\n{json.dumps(schema, indent=2)}\n```"
+    )
+
+
+def build_cache_payload(
+    game_name: str,
+    depth: int,
+    prompt_version: str = PROMPT_VERSION,
+    research_brief: Optional[str] = None,
+    conversion_prompt: Optional[str] = None,
+    response_json_schema: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Build the cache metadata returned to the plugin."""
+    cache = {
+        'game': game_name,
+        'depth': depth,
+        'timestamp': datetime.now().isoformat(),
+        'prompt_version': prompt_version,
+        'instructions': research_brief or build_research_brief(game_name, depth),
+        'research_brief': research_brief or build_research_brief(game_name, depth),
+        'conversion_prompt': conversion_prompt or build_conversion_prompt(game_name),
+        'json_schema': response_json_schema or economy_json_response_schema(),
+        'session_id': f"{game_name.lower().replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    }
+
+    cache['categories'] = [
+        'Core Gameplay Loop',
+        'Resource Management',
+        'Progression Systems'
+    ]
+
+    if depth >= 2:
+        cache['categories'].extend([
+            'Monetization',
+            'Time-Limited Events',
+            'Social Features'
+        ])
+
+    if depth >= 3:
+        cache['categories'].extend([
+            'Competitive Elements',
+            'Collection/Completion',
+            'End-game Content'
+        ])
+
+    return cache
+
+
+def is_placeholder_api_key(api_key: Optional[str]) -> bool:
+    if not api_key:
+        return True
+    normalized = api_key.strip().lower()
+    return (
+        not normalized or
+        normalized.startswith('your_') or
+        'placeholder' in normalized
+    )
+
+
+def is_api_key_error(message: str) -> bool:
+    """Best-effort detection for credential failures returned by providers."""
+    normalized = message.lower()
+    return (
+        'api key' in normalized or
+        'permissiondenied' in normalized or
+        'reported as leaked' in normalized
+    )
 
 @app.route('/health', methods=['GET'])
 def health_check():
@@ -52,38 +159,14 @@ def generate_cache():
         
         if not game_name:
             return jsonify({'error': 'Game name is required'}), 400
-        
-        # Generate cache structure
-        cache = {
-            'game': game_name,
-            'depth': depth,
-            'timestamp': datetime.now().isoformat(),
-            'prompt_version': '1.0',
-            'instructions': f'Research the economy of {game_name} at depth level {depth}',
-            'session_id': f"{game_name.lower().replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        }
-        
-        # Add depth-specific details
-        if depth >= 1:
-            cache['categories'] = [
-                'Core Gameplay Loop',
-                'Resource Management', 
-                'Progression Systems'
-            ]
-        
-        if depth >= 2:
-            cache['categories'].extend([
-                'Monetization',
-                'Time-Limited Events',
-                'Social Features'
-            ])
-        
-        if depth >= 3:
-            cache['categories'].extend([
-                'Competitive Elements',
-                'Collection/Completion',
-                'End-game Content'
-            ])
+        cache = build_cache_payload(
+            game_name,
+            depth,
+            prompt_version=data.get('promptVersion', PROMPT_VERSION),
+            research_brief=data.get('researchBrief'),
+            conversion_prompt=data.get('conversionPrompt'),
+            response_json_schema=data.get('responseJsonSchema')
+        )
         
         # Store session info
         research_sessions[cache['session_id']] = {
@@ -115,6 +198,11 @@ def generate_economy():
         provider_name = data.get('provider', 'gemini')
         api_key = data.get('apiKey')
         session_id = data.get('sessionId')
+        prompt_version = data.get('promptVersion', PROMPT_VERSION)
+        research_brief = data.get('researchBrief') or build_research_brief(game_name, depth)
+        conversion_prompt = data.get('conversionPrompt') or build_conversion_prompt(game_name)
+        response_json_schema = data.get('responseJsonSchema') or economy_json_response_schema()
+        response_mime_type = data.get('responseMimeType', 'application/json')
         
         if not game_name:
             return jsonify({'error': 'Game name is required'}), 400
@@ -125,62 +213,17 @@ def generate_economy():
             api_key = config.get_api_key(provider_name)
             if not api_key:
                 return jsonify({'error': 'API key is required'}), 400
+        elif is_placeholder_api_key(api_key):
+            return jsonify({'error': 'API key is required'}), 400
         
         logger.info(f"Generating economy for {game_name} using {provider_name}")
-        
-        # Create markdown input
-        markdown_content = f"""# {game_name} Economy Research
-
-## Overview
-Game: {game_name}
-Research Depth: Level {depth}
-Generated: {datetime.now().isoformat()}
-
-## Research Focus
-Please research and model the complete economy for {game_name}.
-
-### Core Elements to Include:
-- Primary currencies and resources
-- Core gameplay loops and activities
-- Progression systems (XP, levels, ranks)
-- Resource conversion mechanics
-- Time gates and energy systems
-- Monetization elements
-- Social and competitive features
-- End-game content and goals
-
-### Depth Requirements:
-"""
-        
-        if depth >= 1:
-            markdown_content += """
-Level 1 - Basic Economy:
-- Identify main currencies (premium, soft, event)
-- Map core gameplay loop
-- Basic progression (levels, XP)
-- Primary resource flows
-"""
-        
-        if depth >= 2:
-            markdown_content += """
-Level 2 - Detailed Analysis:
-- All currency types and exchange rates
-- Secondary activities (crafting, trading)
-- Time-gated content
-- Battle passes and subscriptions
-- Social features impact on economy
-"""
-        
-        if depth >= 3:
-            markdown_content += """
-Level 3 - Comprehensive Model:
-- Player segmentation strategies (F2P, dolphins, whales)
-- Optimization paths for different playstyles
-- Detailed monetization mechanics
-- End-game economy loops
-- Competitive economy elements
-- Collection and completion mechanics
-"""
+        markdown_content = build_markdown_content(
+            game_name,
+            depth,
+            research_brief=research_brief,
+            conversion_prompt=conversion_prompt,
+            response_json_schema=response_json_schema
+        )
         
         # Initialize builder with proper kwargs
         provider_kwargs = {}
@@ -199,8 +242,13 @@ Level 3 - Comprehensive Model:
         # Generate economy JSON using the provider
         logger.info(f"Generating economy JSON with {provider_name} provider")
         economy_json = builder.provider.generate_economy_json(
-            markdown_content, 
-            game_name
+            markdown_content,
+            game_name,
+            research_brief=research_brief,
+            conversion_prompt=conversion_prompt,
+            response_json_schema=response_json_schema,
+            response_mime_type=response_mime_type,
+            prompt_version=prompt_version,
         )
         
         # Normalize and validate
@@ -227,8 +275,10 @@ Level 3 - Comprehensive Model:
         })
         
     except Exception as e:
-        logger.error(f"Error generating economy: {str(e)}\n{traceback.format_exc()}")
-        return jsonify({'error': str(e)}), 500
+        error_message = str(e)
+        logger.error(f"Error generating economy: {error_message}\n{traceback.format_exc()}")
+        status_code = 400 if is_api_key_error(error_message) else 500
+        return jsonify({'error': error_message}), status_code
 
 @app.route('/api/research/session/<session_id>', methods=['GET'])
 def get_session(session_id):
@@ -247,26 +297,27 @@ def validate_api_key():
         
         if not api_key:
             return jsonify({'valid': False, 'error': 'No API key provided'}), 400
-        
-        # Basic format check
-        if not api_key.startswith('AIza') or len(api_key) < 39:
+        if is_placeholder_api_key(api_key):
             return jsonify({
                 'valid': False,
-                'error': 'Invalid API key format'
+                'error': 'API key is a placeholder value'
             })
         
         # Try to initialize the provider to test the key
         try:
             from providers import get_provider
             provider = get_provider('gemini', api_key)
-            # If initialization succeeds, key is likely valid
+            is_valid = provider.validate_api_key() if hasattr(provider, 'validate_api_key') else True
             return jsonify({
-                'valid': True,
-                'message': 'API key is valid'
+                'valid': is_valid,
+                'http_ok': True,
+                'message': 'API key is valid' if is_valid else None,
+                'error': None if is_valid else 'Gemini rejected the supplied API key'
             })
         except Exception as e:
             return jsonify({
                 'valid': False,
+                'http_ok': True,
                 'error': str(e)
             })
             

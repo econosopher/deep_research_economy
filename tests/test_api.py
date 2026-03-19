@@ -8,6 +8,7 @@ import json
 import sys
 import os
 from pathlib import Path
+from unittest.mock import Mock, patch
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -49,8 +50,12 @@ class TestEconomyAPI(unittest.TestCase):
         cache = data['cache']
         self.assertEqual(cache['game'], 'Test Game')
         self.assertEqual(cache['depth'], 2)
+        self.assertEqual(cache['prompt_version'], '2.0')
         self.assertIn('categories', cache)
         self.assertEqual(len(cache['categories']), 6)  # depth 2 should have 6 categories
+        self.assertIn('research_brief', cache)
+        self.assertIn('conversion_prompt', cache)
+        self.assertIn('json_schema', cache)
     
     def test_generate_cache_depth_levels(self):
         """Test cache generation at different depth levels"""
@@ -188,6 +193,62 @@ class TestEconomyAPI(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         data = json.loads(response.data)
         self.assertIn('error', data)
+
+    @patch('api_server.EconomyJSONBuilder')
+    def test_generate_economy_forwards_structured_request_fields(self, mock_builder_cls):
+        """Structured prompt/schema fields from the plugin should reach the provider."""
+        mock_provider = Mock()
+        mock_provider.generate_economy_json.return_value = {
+            'inputs': [{'id': 'time', 'label': 'Time', 'kind': 'initial_sink_node'}],
+            'nodes': [{'id': 'to_play', 'label': 'To Play', 'sources': [], 'sinks': ['Time'], 'values': []}],
+            'edges': [['time', 'to_play']]
+        }
+
+        mock_builder = Mock()
+        mock_builder.provider = mock_provider
+        mock_builder.normalize_json.side_effect = lambda data: data
+        mock_builder.stylize_labels.side_effect = lambda data: data
+        mock_builder.stylize_resources.side_effect = lambda data: data
+        mock_builder.enforce_final_goods_policy.side_effect = lambda data: data
+        mock_builder.validate_json.return_value = True
+        mock_builder_cls.return_value = mock_builder
+
+        payload = {
+            'gameName': 'Test Game',
+            'depth': 2,
+            'provider': 'gemini',
+            'apiKey': 'AIza_valid_enough_for_test_payload_only',
+            'promptVersion': '2.0',
+            'researchBrief': 'Research brief text',
+            'conversionPrompt': 'Return a single JSON object only.',
+            'responseMimeType': 'application/json',
+            'responseJsonSchema': {
+                'type': 'object',
+                'required': ['inputs', 'nodes', 'edges']
+            }
+        }
+
+        response = self.client.post('/api/research/generate',
+                                    json=payload,
+                                    content_type='application/json')
+
+        self.assertEqual(response.status_code, 200)
+        _, kwargs = mock_provider.generate_economy_json.call_args
+        self.assertEqual(kwargs['research_brief'], 'Research brief text')
+        self.assertEqual(kwargs['conversion_prompt'], 'Return a single JSON object only.')
+        self.assertEqual(kwargs['response_mime_type'], 'application/json')
+        self.assertEqual(kwargs['prompt_version'], '2.0')
+        self.assertEqual(kwargs['response_json_schema'], payload['responseJsonSchema'])
+
+    def test_validate_key_rejects_placeholder_values(self):
+        """Placeholder values should fail fast with a clear error."""
+        response = self.client.post('/api/research/validate-key',
+                                    json={'apiKey': 'your_google_api_key_here'},
+                                    content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertFalse(data['valid'])
+        self.assertIn('placeholder', data['error'])
 
 
 class TestEconomyAPIIntegration(unittest.TestCase):

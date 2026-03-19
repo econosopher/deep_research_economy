@@ -7,11 +7,13 @@ A sophisticated tool for generating game economy flow charts using AI providers 
 - **Multi-Provider Support**: Seamlessly switch between Claude (3.5 Sonnet) and Gemini (2.5 Pro) for economy analysis
 - **Deep Research Process**: Optimized 2-phase research approach leveraging Gemini 2.5's enhanced capabilities
 - **Secure API Management**: Encrypted storage of API keys with machine-specific encryption
+- **Shared Secret Loading**: Gemini keys can be loaded from env vars or shared env files used by the plugin workflow
 - **Validated Output**: Ensures generated JSON follows the required economy flow schema
 - **Modular Architecture**: Clean separation between providers, configuration, and core logic
 - **Extensible Design**: Easy to add new AI providers or modify research strategies
- - **Structured JSON Generation (Gemini)**: Uses schema-guided responses to enforce the correct shape
- - **Auto ID Normalization**: Automatically converts ids to snake_case and updates edges
+- **Structured JSON Generation (Gemini)**: Uses schema-guided responses to enforce the correct shape
+- **Prompt Contract v2**: Cache and generate endpoints now accept a structured prompt/schema contract used by the plugin
+- **Auto ID Normalization**: Automatically converts ids to snake_case and updates edges
 
 ## Installation
 
@@ -37,6 +39,14 @@ This will guide you through:
 - Setting the repository path (optional)
 
 Your API keys are encrypted using machine-specific keys and stored in `~/.economy_json_builder/`
+
+For plugin-driven usage, Gemini keys can also be discovered from:
+- `GEMINI_DEEP_RESEARCH_API_KEY`
+- `GEMINI_API_KEY`
+- `GOOGLE_API_KEY`
+- `/Users/phillip/Documents/secrets/global.env`
+- `/Users/phillip/Documents/vibe_coding_projects/.env`
+- `~/.api_keys`
 
 ## Usage
 
@@ -190,9 +200,19 @@ PORT=5001 python3 api_server.py
 - `GET /health` - Server health check
 - `POST /api/research/cache` - Generate research cache for prompt building
 - `POST /api/research/generate` - Generate complete economy JSON using LLM
+- `POST /api/research/validate-key` - Validate Gemini API key access
 - `POST /api/research/validate` - Validate economy JSON structure
 - `GET /api/research/session/{id}` - Retrieve session data
 - `GET /api/templates` - List available template files
+
+The cache and generate endpoints support the plugin prompt contract fields:
+- `promptVersion`
+- `researchBrief`
+- `conversionPrompt`
+- `responseMimeType`
+- `responseJsonSchema`
+
+The cache response returns the generated contract payload back to the caller, including `prompt_version`, `research_brief`, `conversion_prompt`, and `json_schema`.
 
 ### Integration with Figma Plugin
 
@@ -208,7 +228,7 @@ For detailed implementation documentation, see the relevant files in the [agents
 
 ```bash
 # Run unit tests
-python3 test_api.py
+python3 -m unittest tests.test_api
 
 # Test endpoints manually
 curl http://localhost:5001/health
@@ -227,12 +247,15 @@ curl http://localhost:5001/health
 - Optimized 2-phase deep research process
 - Comprehensive analysis in Phase 1, direct JSON generation in Phase 2
 - Better structured output with native JSON mode
+- Sanitizes schema-guided output config before sending requests to Gemini
+- Validates API keys using the same configured model path used for generation
 
 ## Security
 
 - API keys are encrypted using `cryptography.fernet`
 - Machine-specific encryption keys
 - Keys stored in user home directory
+- Placeholder keys are ignored during lookup
 - Never committed to version control
 
 ## Development

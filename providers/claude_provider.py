@@ -200,7 +200,7 @@ Structure this information clearly for conversion to the JSON format."""
             print(f"Error refining economy structure: {e}")
             raise
     
-    def generate_economy_json(self, game_info: str, game_title: str) -> Dict[str, Any]:
+    def generate_economy_json(self, game_info: str, game_title: str, **kwargs) -> Dict[str, Any]:
         """Generate economy flow JSON using deep research process."""
         try:
             # Detect if we're working with research-generated content
